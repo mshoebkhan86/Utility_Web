@@ -1,12 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Utility Dashboard</title>
-    <link rel="stylesheet" href="css/main.css">
-</head>
-<body>
+# PowerShell script to add navbar to all demo pages
+
+# Define the navbar HTML structure
+$navbarHTML = @'
     <!-- Top Navigation Bar -->
     <nav class="top-navbar">
         <div class="navbar-container">
@@ -30,8 +25,8 @@
 
             <!-- Navigation Links -->
             <div class="navbar-nav">
-                <a href="#" class="nav-link active">Dashboard</a>
-                <a href="#" class="nav-link">Tools</a>
+                <a href="index.html" class="nav-link">Dashboard</a>
+                <a href="#" class="nav-link active">Tools</a>
                 <a href="#" class="nav-link">About</a>
                 <a href="#" class="nav-link">Help</a>
             </div>
@@ -97,34 +92,68 @@
             </div>
         </div>
     </nav>
+'@
 
-    <div class="container">
-        <header class="header">
-            <h1 class="title">Utility Dashboard</h1>
-            <p class="subtitle">Your comprehensive toolkit for productivity and efficiency</p>
-        </header>
+# Get all demo HTML files (excluding the ones already updated)
+$demoFiles = Get-ChildItem -Path "." -Name "*-demo.html" | Where-Object { $_ -notin @("api-tester-demo.html", "business-card-designer-demo.html") }
 
-        <main class="main-content">
-            <div class="categories-grid" id="categoriesGrid">
-                <!-- Categories will be dynamically populated -->
-            </div>
+Write-Host "Found $($demoFiles.Count) demo files to update:"
+$demoFiles | ForEach-Object { Write-Host "  - $_" }
 
-            <div class="subcategories-view" id="subcategoriesView" style="display: none;">
-                <div class="breadcrumb">
-                    <button class="back-btn" id="backBtn">← Back to Categories</button>
-                    <span class="current-category" id="currentCategory"></span>
-                </div>
-                <div class="subcategories-grid" id="subcategoriesGrid">
-                    <!-- Subcategories will be dynamically populated -->
-                </div>
-            </div>
-        </main>
-    </div>
+foreach ($file in $demoFiles) {
+    Write-Host "`nProcessing: $file"
+    
+    try {
+        # Read the file content
+        $content = Get-Content -Path $file -Raw -Encoding UTF8
+        
+        # Add padding-top to body
+        if ($content -match 'padding:\s*0') {
+            $content = $content -replace '(padding:\s*)0', '${1}70px 0 0 0'
+            Write-Host "  Updated body padding"
+        } else {
+            $content = $content -replace '(body\s*\{[^}]*)(})','${1}padding-top: 70px; $2'
+            Write-Host "  Added body padding-top"
+        }
+        
+        # Replace existing headers
+        $patterns = @(
+            '<header[^>]*class="[^"]*demo-header[^"]*"[^>]*>[\s\S]*?</header>',
+            '<header[^>]*class="[^"]*page-header[^"]*"[^>]*>[\s\S]*?</header>',
+            '<div[^>]*class="[^"]*demo-header[^"]*"[^>]*>[\s\S]*?</div>',
+            '<div[^>]*class="[^"]*page-header[^"]*"[^>]*>[\s\S]*?</div>'
+        )
+        
+        $headerReplaced = $false
+        foreach ($pattern in $patterns) {
+            if ($content -match $pattern) {
+                $content = $content -replace $pattern, $navbarHTML
+                $headerReplaced = $true
+                Write-Host "  Replaced existing header with navbar"
+                break
+            }
+        }
+        
+        # If no header found, add navbar after body tag
+        if (-not $headerReplaced) {
+            $content = $content -replace '(<body[^>]*>)', "`$1`n$navbarHTML"
+            Write-Host "  Added navbar after body tag"
+        }
+        
+        # Add navbar.js script
+        if ($content -notmatch 'navbar\.js') {
+            $content = $content -replace '(\s*</body>)', "`n    <script src=`"js/navbar.js`"></script>`$1"
+            Write-Host "  Added navbar.js script"
+        }
+        
+        # Write back to file
+        Set-Content -Path $file -Value $content -Encoding UTF8
+        Write-Host "  Successfully updated $file"
+        
+    } catch {
+        Write-Host "  Error updating $file : $($_.Exception.Message)" -ForegroundColor Red
+    }
+}
 
-    <!-- PDF.js Library -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-    <script src="js/utilities/word-converter.js"></script>
-    <script src="js/dashboard.js"></script>
-    <script src="js/navbar.js"></script>
-</body>
-</html>
+Write-Host "`nNavbar update process completed!"
+Write-Host "Updated files: $($demoFiles.Count)"
