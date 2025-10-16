@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice Generator - Professional Invoice Management</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 300;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .main-content {
+            padding: 30px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            margin: 5px;
+        }
+
+        .btn-primary {
+            background: #007bff;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #0056b3;
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #1e7e34;
+            transform: translateY(-2px);
+        }
+
+        .btn-warning {
+            background: #ffc107;
+            color: #212529;
+        }
+
+        .btn-warning:hover {
+            background: #e0a800;
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #545b62;
+            transform: translateY(-2px);
+        }
+
+        .btn-sm {
+            padding: 8px 16px;
+            font-size: 12px;
+        }
+
+        .alert {
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .alert-info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        .demo-section {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .demo-section h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+
+        .demo-section p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-left: 4px solid #007bff;
+        }
+
+        .feature-card h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .feature-card p {
+            color: #666;
+            line-height: 1.5;
+        }
+
+        .feature-card i {
+            font-size: 2em;
+            color: #007bff;
+            margin-bottom: 15px;
+        }
+
+        .back-link {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(255,255,255,0.9);
+            padding: 10px 15px;
+            border-radius: 25px;
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .back-link:hover {
+            background: white;
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                border-radius: 10px;
+            }
+            
+            .header {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .main-content {
+                padding: 20px;
+            }
+            
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="back-link">
+        <i class="fas fa-arrow-left"></i> Back to Dashboard
+    </a>
+
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-file-invoice-dollar"></i> Invoice Generator</h1>
+            <p>Professional invoice management with complete workflow support</p>
+        </div>
+
+        <div class="main-content">
+            <div class="demo-section">
+                <h2><i class="fas fa-rocket"></i> Get Started</h2>
+                <p>Create professional invoices with our comprehensive Invoice Generator. Features include invoice creation, editing, completion workflow, PDF generation, and invoice history management.</p>
+                
+                <div class="text-center">
+                    <button id="startInvoiceGenerator" class="btn btn-primary btn-lg">
+                        <i class="fas fa-play"></i> Launch Invoice Generator
+                    </button>
+                </div>
+            </div>
+
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <i class="fas fa-plus-circle"></i>
+                    <h3>Create Invoices</h3>
+                    <p>Build professional invoices with company details, client information, itemized billing, and automatic calculations.</p>
+                </div>
+
+                <div class="feature-card">
+                    <i class="fas fa-check-circle"></i>
+                    <h3>Complete Feature</h3>
+                    <p>Mark invoices as completed with validation, status locking, automatic PDF generation, and history archival.</p>
+                </div>
+
+                <div class="feature-card">
+                    <i class="fas fa-file-pdf"></i>
+                    <h3>PDF Generation</h3>
+                    <p>Generate professional PDF invoices for printing, emailing, or record keeping with formatted layouts.</p>
+                </div>
+
+                <div class="feature-card">
+                    <i class="fas fa-history"></i>
+                    <h3>Invoice History</h3>
+                    <p>Save, load, and manage invoice history with search, filtering, and deletion capabilities.</p>
+                </div>
+
+                <div class="feature-card">
+                    <i class="fas fa-calculator"></i>
+                    <h3>Auto Calculations</h3>
+                    <p>Automatic subtotal, tax, and total calculations with customizable tax rates and currency formatting.</p>
+                </div>
+
+                <div class="feature-card">
+                    <i class="fas fa-cog"></i>
+                    <h3>Settings & Customization</h3>
+                    <p>Configure company information, default tax rates, invoice numbering, and other preferences.</p>
+                </div>
+            </div>
+
+            <div class="demo-section">
+                <h2><i class="fas fa-info-circle"></i> How to Use</h2>
+                <p><strong>1. Create New Invoice:</strong> Click "New Invoice" to start with a blank invoice template.</p>
+                <p><strong>2. Fill Details:</strong> Enter company information, client details, and add invoice items.</p>
+                <p><strong>3. Review & Save:</strong> Preview your invoice and save it to history for future reference.</p>
+                <p><strong>4. Complete Invoice:</strong> Use the "Complete" feature to finalize the invoice, lock editing, and generate PDF.</p>
+                <p><strong>5. Manage History:</strong> Load previous invoices, make copies, or delete old records.</p>
+            </div>
+
+            <!-- Invoice Generator Container -->
+            <div id="invoiceGeneratorContainer"></div>
+        </div>
+    </div>
+
+    <script src="js/utilities/invoice-generator.js"></script>
+    <script>
+        let invoiceGenerator;
+
+        document.getElementById('startInvoiceGenerator').addEventListener('click', function() {
+            const container = document.getElementById('invoiceGeneratorContainer');
+            
+            if (!invoiceGenerator) {
+                invoiceGenerator = new InvoiceGeneratorUtility();
+                invoiceGenerator.init('invoiceGeneratorContainer');
+                
+                // Hide the start button and show the generator
+                this.style.display = 'none';
+                container.style.display = 'block';
+                
+                // Scroll to the generator
+                container.scrollIntoView({ behavior: 'smooth' });
+            }
+        });
+
+        // Initialize on page load if needed
+        document.addEventListener('DOMContentLoaded', function() {
+            // Auto-start if URL contains parameter
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('autostart') === 'true') {
+                document.getElementById('startInvoiceGenerator').click();
+            }
+        });
+    </script>
+</body>
+</html>

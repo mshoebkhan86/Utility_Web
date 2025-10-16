@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URL Encoder/Decoder - Utility Dashboard</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .demo-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .demo-header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+            font-weight: 600;
+        }
+        
+        .demo-header p {
+            margin: 0.5rem 0 0 0;
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: white;
+            text-decoration: none;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            margin-bottom: 1rem;
+        }
+        
+        .back-link:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        .info-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+            padding: 0 1rem;
+        }
+        
+        .info-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+        
+        .info-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .info-card i {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+        }
+        
+        .info-card h3 {
+            margin: 0 0 0.5rem 0;
+            color: #2c3e50;
+        }
+        
+        .info-card p {
+            margin: 0;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .features-section {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 2rem 1rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        .features-section h2 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 2rem;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .feature-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+        
+        .feature-item i {
+            font-size: 1.5rem;
+            color: #667eea;
+            margin-top: 0.2rem;
+        }
+        
+        .feature-content h4 {
+            margin: 0 0 0.5rem 0;
+            color: #2c3e50;
+        }
+        
+        .feature-content p {
+            margin: 0;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .shortcuts-section {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 2rem 1rem;
+        }
+        
+        .shortcuts-section h3 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 1.5rem;
+        }
+        
+        .shortcuts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+        
+        .shortcut-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: white;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .shortcut-key {
+            background: #2c3e50;
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 0.8rem;
+        }
+        
+        .samples-section {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 2rem 1rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        .samples-section h3 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 1.5rem;
+        }
+        
+        .samples-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+        
+        .sample-item {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .sample-item:hover {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+        
+        .sample-item h4 {
+            margin: 0 0 0.5rem 0;
+            color: #2c3e50;
+            font-size: 0.9rem;
+        }
+        
+        .sample-item code {
+            display: block;
+            background: white;
+            padding: 0.5rem;
+            border-radius: 4px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.8rem;
+            color: #666;
+            word-break: break-all;
+            border: 1px solid #dee2e6;
+        }
+        
+        @media (max-width: 768px) {
+            .demo-header h1 {
+                font-size: 2rem;
+            }
+            
+            .info-cards, .features-grid, .shortcuts-grid, .samples-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .features-section, .shortcuts-section, .samples-section {
+                margin: 1rem 0.5rem;
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-header">
+        <div class="container">
+            <a href="index.html" class="back-link">
+                <i class="fas fa-arrow-left"></i>
+                Back to Dashboard
+            </a>
+            <h1>URL Encoder/Decoder</h1>
+            <p>Comprehensive URL encoding and decoding with advanced features</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- URL Encoder Container -->
+        <div id="urlEncoderContainer" style="margin-bottom: 2rem;"></div>
+
+        <div class="info-cards">
+            <div class="info-card">
+                <i class="fas fa-link"></i>
+                <h3>Smart URL Processing</h3>
+                <p>Advanced encoding/decoding with support for all URL components and special characters</p>
+            </div>
+            <div class="info-card">
+                <i class="fas fa-cogs"></i>
+                <h3>Flexible Configuration</h3>
+                <p>Customizable settings for space encoding, reserved characters, and case preservation</p>
+            </div>
+            <div class="info-card">
+                <i class="fas fa-layer-group"></i>
+                <h3>Multiple Modes</h3>
+                <p>Text mode, URL component builder, and batch processing for multiple URLs</p>
+            </div>
+            <div class="info-card">
+                <i class="fas fa-history"></i>
+                <h3>Conversion History</h3>
+                <p>Track and reuse previous encoding/decoding operations with full history management</p>
+            </div>
+        </div>
+
+        <div class="features-section">
+            <h2>Key Features</h2>
+            <div class="features-grid">
+                <div class="feature-item">
+                    <i class="fas fa-shield-alt"></i>
+                    <div class="feature-content">
+                        <h4>Secure Encoding</h4>
+                        <p>Properly encode URLs to prevent injection attacks and ensure safe transmission of data through web protocols.</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-puzzle-piece"></i>
+                    <div class="feature-content">
+                        <h4>URL Component Builder</h4>
+                        <p>Build complete URLs from individual components: protocol, host, port, path, query parameters, and fragments.</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-list"></i>
+                    <div class="feature-content">
+                        <h4>Batch Processing</h4>
+                        <p>Process multiple URLs simultaneously with batch encoding and decoding capabilities for efficiency.</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-sliders-h"></i>
+                    <div class="feature-content">
+                        <h4>Advanced Options</h4>
+                        <p>Configure space encoding (% or +), reserved character handling, case preservation, and custom character sets.</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-exchange-alt"></i>
+                    <div class="feature-content">
+                        <h4>Bidirectional Conversion</h4>
+                        <p>Seamlessly switch between encoding and decoding with input/output swapping and auto-detection.</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-mobile-alt"></i>
+                    <div class="feature-content">
+                        <h4>Mobile Responsive</h4>
+                        <p>Fully optimized interface that works perfectly on desktop, tablet, and mobile devices.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="shortcuts-section">
+            <h3>Keyboard Shortcuts</h3>
+            <div class="shortcuts-grid">
+                <div class="shortcut-item">
+                    <span>Encode Text</span>
+                    <span class="shortcut-key">Ctrl + Enter</span>
+                </div>
+                <div class="shortcut-item">
+                    <span>Copy Output</span>
+                    <span class="shortcut-key">Ctrl + C</span>
+                </div>
+                <div class="shortcut-item">
+                    <span>Save Output</span>
+                    <span class="shortcut-key">Ctrl + S</span>
+                </div>
+                <div class="shortcut-item">
+                    <span>Clear All</span>
+                    <span class="shortcut-key">Ctrl + Del</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="samples-section">
+            <h3>Sample Data</h3>
+            <p style="text-align: center; color: #666; margin-bottom: 1.5rem;">Click on any sample to load it into the encoder</p>
+            <div class="samples-grid">
+                <div class="sample-item" onclick="loadSample('simpleUrl')">
+                    <h4>Simple URL</h4>
+                    <code>https://example.com/search?q=hello world</code>
+                </div>
+                <div class="sample-item" onclick="loadSample('complexUrl')">
+                    <h4>Complex URL with Parameters</h4>
+                    <code>https://api.example.com/users?name=John Doe&age=30&city=New York&tags=developer,javascript</code>
+                </div>
+                <div class="sample-item" onclick="loadSample('specialChars')">
+                    <h4>Special Characters</h4>
+                    <code>Hello World! @#$%^&*()_+-=[]{}|;':",./<>?</code>
+                </div>
+                <div class="sample-item" onclick="loadSample('unicode')">
+                    <h4>Unicode Text</h4>
+                    <code>Héllo Wörld! 你好世界 🌍🚀✨</code>
+                </div>
+                <div class="sample-item" onclick="loadSample('encoded')">
+                    <h4>Already Encoded URL</h4>
+                    <code>https%3A//example.com/search%3Fq%3Dhello%20world%26lang%3Den</code>
+                </div>
+                <div class="sample-item" onclick="loadSample('queryString')">
+                    <h4>Query String Only</h4>
+                    <code>name=John Doe&email=john@example.com&message=Hello, how are you?</code>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/utilities/url-encoder.js"></script>
+    <script>
+        // Initialize the URL Encoder
+        document.addEventListener('DOMContentLoaded', function() {
+            const container = document.getElementById('urlEncoderContainer');
+            window.urlEncoder.init(container);
+        });
+
+        // Sample data loader
+        function loadSample(type) {
+            const samples = {
+                simpleUrl: 'https://example.com/search?q=hello world',
+                complexUrl: 'https://api.example.com/users?name=John Doe&age=30&city=New York&tags=developer,javascript',
+                specialChars: 'Hello World! @#$%^&*()_+-=[]{}|;\':",./<>?',
+                unicode: 'Héllo Wörld! 你好世界 🌍🚀✨',
+                encoded: 'https%3A//example.com/search%3Fq%3Dhello%20world%26lang%3Den',
+                queryString: 'name=John Doe&email=john@example.com&message=Hello, how are you?'
+            };
+
+            const inputField = document.getElementById('inputText');
+            if (inputField && samples[type]) {
+                inputField.value = samples[type];
+                window.urlEncoder.updateInputInfo();
+                
+                // Show success message
+                window.urlEncoder.showMessage(`Sample "${type}" loaded successfully`, 'success');
+                
+                // Scroll to the encoder
+                document.getElementById('urlEncoderContainer').scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'start' 
+                });
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Analyzer - Utility Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 300;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .back-btn {
+            position: absolute;
+            top: 30px;
+            left: 30px;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+        }
+
+        .image-analyzer-wrapper {
+            padding: 40px;
+        }
+
+        .analyzer-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .analyzer-header h2 {
+            font-size: 2rem;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .analyzer-header p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .upload-section {
+            margin-bottom: 30px;
+        }
+
+        .upload-area {
+            border: 3px dashed #ddd;
+            border-radius: 15px;
+            padding: 60px 20px;
+            text-align: center;
+            background: #fafafa;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .upload-area:hover, .upload-area.drag-over {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+
+        .upload-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+
+        .upload-content h3 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 1.5rem;
+        }
+
+        .upload-content p {
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .sample-images {
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .sample-images h4 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .sample-grid {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .sample-btn {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            padding: 12px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .sample-btn:hover {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+            transform: translateY(-2px);
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5a6fd8;
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #218838;
+        }
+
+        .btn-warning {
+            background: #ffc107;
+            color: #212529;
+        }
+
+        .btn-warning:hover {
+            background: #e0a800;
+        }
+
+        .btn-info {
+            background: #17a2b8;
+            color: white;
+        }
+
+        .btn-info:hover {
+            background: #138496;
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: #6c757d;
+            border: 2px solid #6c757d;
+        }
+
+        .btn-outline:hover {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .image-preview-section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .preview-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .preview-header h3 {
+            color: #333;
+            margin: 0;
+        }
+
+        .preview-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .image-preview {
+            text-align: center;
+            margin-bottom: 20px;
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .basic-info {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .results-section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .results-header h3 {
+            color: #333;
+            margin: 0;
+        }
+
+        .results-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .results-tabs {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 30px;
+            background: white;
+            padding: 5px;
+            border-radius: 10px;
+            overflow-x: auto;
+        }
+
+        .tab-btn {
+            padding: 12px 20px;
+            border: none;
+            background: transparent;
+            color: #666;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            font-weight: 500;
+        }
+
+        .tab-btn.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .tab-btn:hover:not(.active) {
+            background: #f0f4ff;
+            color: #667eea;
+        }
+
+        .tab-content {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+        }
+
+        .tab-pane {
+            display: none;
+        }
+
+        .tab-pane.active {
+            display: block;
+        }
+
+        .overview-content {
+            display: grid;
+            gap: 30px;
+        }
+
+        .score-summary {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .overall-score {
+            text-align: center;
+        }
+
+        .score-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: conic-gradient(#28a745 0deg, #28a745 var(--score-deg, 0deg), #e9ecef var(--score-deg, 0deg));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 10px;
+            position: relative;
+        }
+
+        .score-circle::before {
+            content: '';
+            width: 90px;
+            height: 90px;
+            background: white;
+            border-radius: 50%;
+            position: absolute;
+        }
+
+        .score-circle span {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #333;
+            z-index: 1;
+        }
+
+        .score-label {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .category-scores {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 20px;
+        }
+
+        .category-score {
+            text-align: center;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .score-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .score-value.excellent { color: #28a745; }
+        .score-value.good { color: #17a2b8; }
+        .score-value.fair { color: #ffc107; }
+        .score-value.poor { color: #dc3545; }
+
+        .score-name {
+            font-size: 0.9rem;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .quick-insights, .recommendations {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .quick-insights h4, .recommendations h4 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .insights-list, .recommendations-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .insight-item, .recommendation-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            background: white;
+            border-radius: 8px;
+            border-left: 4px solid #ddd;
+        }
+
+        .insight-item.success { border-left-color: #28a745; }
+        .insight-item.warning { border-left-color: #ffc107; }
+        .insight-item.error { border-left-color: #dc3545; }
+        .insight-item.info { border-left-color: #17a2b8; }
+
+        .recommendation-item {
+            border-left-color: #667eea;
+        }
+
+        .insight-icon, .recommendation-icon {
+            font-size: 1.2rem;
+        }
+
+        .insight-text, .recommendation-text {
+            flex: 1;
+            color: #333;
+        }
+
+        .analysis-section h4 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .metric-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            border: 1px solid #e9ecef;
+        }
+
+        .metric-card h5 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 8px;
+        }
+
+        .metric-detail {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+            color: #555;
+        }
+
+        .metric-detail:last-child {
+            border-bottom: none;
+        }
+
+        .metric-status {
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 8px;
+            background: white;
+        }
+
+        .result-placeholder, .insight-placeholder, .recommendation-placeholder {
+            text-align: center;
+            color: #999;
+            font-style: italic;
+            padding: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                border-radius: 15px;
+            }
+
+            .header {
+                padding: 20px;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .image-analyzer-wrapper {
+                padding: 20px;
+            }
+
+            .upload-area {
+                padding: 40px 15px;
+            }
+
+            .score-summary {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .category-scores {
+                grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            }
+
+            .results-header {
+                flex-direction: column;
+                gap: 15px;
+                align-items: stretch;
+            }
+
+            .results-actions {
+                justify-content: center;
+            }
+
+            .preview-header {
+                flex-direction: column;
+                gap: 15px;
+                align-items: stretch;
+            }
+
+            .preview-actions {
+                justify-content: center;
+            }
+
+            .results-tabs {
+                overflow-x: auto;
+            }
+
+            .tab-btn {
+                min-width: 100px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <a href="index.html" class="back-btn">← Back to Dashboard</a>
+            <h1>🖼️ Image Analyzer</h1>
+            <p>Comprehensive image analysis and optimization tool</p>
+        </div>
+        
+        <div id="image-analyzer-container"></div>
+    </div>
+
+    <script src="js/utilities/image-analyzer.js"></script>
+    <script>
+        // Initialize the Image Analyzer when the page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            const imageAnalyzer = new ImageAnalyzerUtility();
+            imageAnalyzer.init();
+        });
+    </script>
+</body>
+</html>

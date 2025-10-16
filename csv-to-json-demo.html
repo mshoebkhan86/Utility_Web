@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSV to JSON Converter - Utility Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+            margin-bottom: 30px;
+        }
+
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            text-decoration: none;
+            padding: 12px 20px;
+            border-radius: 25px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .back-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .main-content {
+            padding: 40px;
+        }
+
+        .info-section {
+            padding: 40px;
+            background: #f8f9fa;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .info-card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .info-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .info-card i {
+            font-size: 3em;
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+
+        .info-card h3 {
+            font-size: 1.3em;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .info-card p {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .features-section {
+            background: white;
+            padding: 40px;
+        }
+
+        .features-section h2 {
+            text-align: center;
+            font-size: 2.2em;
+            margin-bottom: 40px;
+            color: #333;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .feature-item {
+            padding: 25px;
+            border: 2px solid #f0f0f0;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .feature-item:hover {
+            border-color: #667eea;
+            background: #f8f9ff;
+        }
+
+        .feature-item h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+
+        .feature-item p {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .shortcuts-section {
+            background: #f8f9fa;
+            padding: 40px;
+        }
+
+        .shortcuts-section h2 {
+            text-align: center;
+            font-size: 2em;
+            margin-bottom: 30px;
+            color: #333;
+        }
+
+        .shortcuts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .shortcut-item {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .shortcut-key {
+            background: #667eea;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+        }
+
+        .sample-section {
+            background: white;
+            padding: 40px;
+        }
+
+        .sample-section h2 {
+            text-align: center;
+            font-size: 2em;
+            margin-bottom: 30px;
+            color: #333;
+        }
+
+        .sample-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .sample-card {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 25px;
+            border-left: 4px solid #667eea;
+        }
+
+        .sample-card h4 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+
+        .sample-code {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            overflow-x: auto;
+            margin-bottom: 15px;
+        }
+
+        .sample-button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s ease;
+        }
+
+        .sample-button:hover {
+            background: #5a6fd8;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 30px 20px;
+            }
+
+            .header h1 {
+                font-size: 2em;
+            }
+
+            .main-content,
+            .info-section,
+            .features-section,
+            .shortcuts-section,
+            .sample-section {
+                padding: 30px 20px;
+            }
+
+            .back-button {
+                position: static;
+                display: inline-block;
+                margin-bottom: 20px;
+            }
+
+            .info-grid,
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <a href="index.html" class="back-button">
+                <i class="fas fa-arrow-left"></i>
+                Back to Dashboard
+            </a>
+            <h1><i class="fas fa-exchange-alt"></i> CSV to JSON Converter</h1>
+            <p>Transform CSV data into JSON format with advanced parsing options and validation</p>
+        </div>
+
+        <div class="main-content">
+            <div id="csvConverterContainer"></div>
+        </div>
+
+        <div class="info-section">
+            <div class="info-grid">
+                <div class="info-card">
+                    <i class="fas fa-file-csv"></i>
+                    <h3>Smart CSV Parsing</h3>
+                    <p>Automatically detect delimiters, handle quoted fields, and parse complex CSV structures with precision</p>
+                </div>
+                <div class="info-card">
+                    <i class="fas fa-cogs"></i>
+                    <h3>Flexible Configuration</h3>
+                    <p>Customize delimiter, headers, data types, and parsing options to match your specific CSV format</p>
+                </div>
+                <div class="info-card">
+                    <i class="fas fa-eye"></i>
+                    <h3>Live Preview</h3>
+                    <p>Preview your data in table format before conversion to ensure accuracy and proper formatting</p>
+                </div>
+                <div class="info-card">
+                    <i class="fas fa-download"></i>
+                    <h3>Export Options</h3>
+                    <p>Download converted JSON files, copy to clipboard, or format for different use cases</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="features-section">
+            <h2>Advanced Features</h2>
+            <div class="features-grid">
+                <div class="feature-item">
+                    <h4><i class="fas fa-magic"></i> Auto-Detection</h4>
+                    <p>Automatically detects CSV delimiters (comma, semicolon, tab, pipe) and suggests optimal parsing settings for your data.</p>
+                </div>
+                <div class="feature-item">
+                    <h4><i class="fas fa-shield-alt"></i> Data Validation</h4>
+                    <p>Validates CSV structure, checks for malformed rows, and provides detailed error messages with suggestions for fixes.</p>
+                </div>
+                <div class="feature-item">
+                    <h4><i class="fas fa-code"></i> Type Conversion</h4>
+                    <p>Intelligent data type detection and conversion - automatically converts numbers, booleans, and handles null values.</p>
+                </div>
+                <div class="feature-item">
+                    <h4><i class="fas fa-history"></i> Conversion History</h4>
+                    <p>Keep track of your conversion history with detailed statistics and settings for easy reference and repetition.</p>
+                </div>
+                <div class="feature-item">
+                    <h4><i class="fas fa-edit"></i> Custom Headers</h4>
+                    <p>Define custom column headers when your CSV doesn't include them, or override existing headers as needed.</p>
+                </div>
+                <div class="feature-item">
+                    <h4><i class="fas fa-compress-alt"></i> Output Formatting</h4>
+                    <p>Choose between formatted (pretty-printed) or minified JSON output depending on your requirements.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="shortcuts-section">
+            <h2>Keyboard Shortcuts</h2>
+            <div class="shortcuts-grid">
+                <div class="shortcut-item">
+                    <span>Convert to JSON</span>
+                    <span class="shortcut-key">Ctrl + Enter</span>
+                </div>
+                <div class="shortcut-item">
+                    <span>Preview Data</span>
+                    <span class="shortcut-key">Ctrl + P</span>
+                </div>
+                <div class="shortcut-item">
+                    <span>Clear All</span>
+                    <span class="shortcut-key">Ctrl + Delete</span>
+                </div>
+                <div class="shortcut-item">
+                    <span>Copy JSON</span>
+                    <span class="shortcut-key">Ctrl + C</span>
+                </div>
+                <div class="shortcut-item">
+                    <span>Download JSON</span>
+                    <span class="shortcut-key">Ctrl + S</span>
+                </div>
+                <div class="shortcut-item">
+                    <span>Upload File</span>
+                    <span class="shortcut-key">Ctrl + O</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="sample-section">
+            <h2>Sample CSV Data</h2>
+            <p style="text-align: center; margin-bottom: 30px; color: #666;">Click any sample below to load it into the converter</p>
+            <div class="sample-grid">
+                <div class="sample-card">
+                    <h4>Employee Data</h4>
+                    <div class="sample-code">Name,Age,Department,Salary
+John Doe,28,Engineering,75000
+Jane Smith,32,Marketing,65000
+Mike Johnson,25,Sales,55000</div>
+                    <button class="sample-button" onclick="loadSampleData('employees')">Load Sample</button>
+                </div>
+                <div class="sample-card">
+                    <h4>Product Inventory</h4>
+                    <div class="sample-code">Product ID,Name,Category,Price,Stock
+P001,Laptop,Electronics,999.99,50
+P002,Desk Chair,Furniture,199.50,25
+P003,Coffee Mug,Kitchen,12.99,100</div>
+                    <button class="sample-button" onclick="loadSampleData('products')">Load Sample</button>
+                </div>
+                <div class="sample-card">
+                    <h4>Sales Data</h4>
+                    <div class="sample-code">Date,Customer,Product,Quantity,Total
+2024-01-15,ABC Corp,Widget A,100,2500.00
+2024-01-16,XYZ Ltd,Widget B,50,1750.00
+2024-01-17,DEF Inc,Widget C,75,3000.00</div>
+                    <button class="sample-button" onclick="loadSampleData('sales')">Load Sample</button>
+                </div>
+                <div class="sample-card">
+                    <h4>Semicolon Delimited</h4>
+                    <div class="sample-code">Name;Email;Country;Active
+Alice Johnson;alice@email.com;USA;true
+Bob Wilson;bob@email.com;Canada;false
+Carol Davis;carol@email.com;UK;true</div>
+                    <button class="sample-button" onclick="loadSampleData('semicolon')">Load Sample</button>
+                </div>
+                <div class="sample-card">
+                    <h4>Tab Delimited</h4>
+                    <div class="sample-code">ID	Title	Author	Year	Genre
+1	The Great Gatsby	F. Scott Fitzgerald	1925	Fiction
+2	To Kill a Mockingbird	Harper Lee	1960	Fiction</div>
+                    <button class="sample-button" onclick="loadSampleData('tab')">Load Sample</button>
+                </div>
+                <div class="sample-card">
+                    <h4>Complex Data</h4>
+                    <div class="sample-code">Name,"Address, Full",Phone,"Notes, Special"
+"Smith, John","123 Main St, Apt 4B",555-0123,"VIP customer, handle with care"
+"Doe, Jane","456 Oak Ave, Suite 200",555-0456,"New customer, first order"</div>
+                    <button class="sample-button" onclick="loadSampleData('complex')">Load Sample</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Include the CSV to JSON utility -->
+    <script src="js/utilities/csv-to-json.js"></script>
+    
+    <script>
+        // Initialize the CSV to JSON converter
+        let csvConverter;
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize the converter
+            csvConverter = new CsvToJsonUtility();
+            csvConverter.init();
+            
+            // Create the interface
+            const container = document.getElementById('csvConverterContainer');
+            csvConverter.createInterface(container);
+            
+            // Add keyboard shortcuts
+            document.addEventListener('keydown', function(e) {
+                if (e.ctrlKey) {
+                    switch(e.key) {
+                        case 'Enter':
+                            e.preventDefault();
+                            document.getElementById('convertBtn')?.click();
+                            break;
+                        case 'p':
+                            e.preventDefault();
+                            document.getElementById('previewBtn')?.click();
+                            break;
+                        case 'Delete':
+                            e.preventDefault();
+                            document.getElementById('clearBtn')?.click();
+                            break;
+                        case 'c':
+                            if (document.getElementById('jsonOutput')?.textContent) {
+                                e.preventDefault();
+                                document.getElementById('copyJsonBtn')?.click();
+                            }
+                            break;
+                        case 's':
+                            if (document.getElementById('jsonOutput')?.textContent) {
+                                e.preventDefault();
+                                document.getElementById('downloadJsonBtn')?.click();
+                            }
+                            break;
+                        case 'o':
+                            e.preventDefault();
+                            document.getElementById('csvFileInput')?.click();
+                            break;
+                    }
+                }
+            });
+        });
+        
+        // Sample data loader
+        function loadSampleData(type) {
+            const samples = {
+                employees: `Name,Age,Department,Salary,Active
+John Doe,28,Engineering,75000,true
+Jane Smith,32,Marketing,65000,true
+Mike Johnson,25,Sales,55000,false
+Sarah Wilson,29,HR,58000,true
+David Brown,35,Engineering,82000,true`,
+                
+                products: `Product ID,Name,Category,Price,Stock,Available
+P001,Laptop Computer,Electronics,999.99,50,true
+P002,Ergonomic Desk Chair,Furniture,199.50,25,true
+P003,Coffee Mug Set,Kitchen,12.99,100,true
+P004,Wireless Mouse,Electronics,29.99,75,false
+P005,Standing Desk,Furniture,449.00,15,true`,
+                
+                sales: `Date,Customer,Product,Quantity,Unit Price,Total,Region
+2024-01-15,ABC Corporation,Widget A,100,25.00,2500.00,North
+2024-01-16,XYZ Limited,Widget B,50,35.00,1750.00,South
+2024-01-17,DEF Industries,Widget C,75,40.00,3000.00,East
+2024-01-18,GHI Enterprises,Widget A,200,25.00,5000.00,West
+2024-01-19,JKL Company,Widget B,80,35.00,2800.00,North`,
+                
+                semicolon: `Name;Email;Country;Age;Active
+Alice Johnson;alice@email.com;USA;28;true
+Bob Wilson;bob@email.com;Canada;34;false
+Carol Davis;carol@email.com;UK;31;true
+Daniel Garcia;daniel@email.com;Spain;26;true
+Emma Martinez;emma@email.com;Mexico;29;false`,
+                
+                tab: `ID\tTitle\tAuthor\tYear\tGenre\tPages
+1\tThe Great Gatsby\tF. Scott Fitzgerald\t1925\tFiction\t180
+2\tTo Kill a Mockingbird\tHarper Lee\t1960\tFiction\t376
+3\t1984\tGeorge Orwell\t1949\tDystopian\t328
+4\tPride and Prejudice\tJane Austen\t1813\tRomance\t432`,
+                
+                complex: `Name,"Address, Full",Phone,"Notes, Special",Join Date
+"Smith, John","123 Main St, Apt 4B, New York, NY 10001",555-0123,"VIP customer, handle with care",2023-01-15
+"Doe, Jane","456 Oak Ave, Suite 200, Los Angeles, CA 90210",555-0456,"New customer, first order",2023-02-20
+"Johnson, Mike","789 Pine Rd, Unit 5C, Chicago, IL 60601",555-0789,"Bulk orders, discount applied",2023-03-10`
+            };
+            
+            const textInput = document.getElementById('csvTextInput');
+            if (textInput && samples[type]) {
+                textInput.value = samples[type];
+                
+                // Trigger input event to enable buttons
+                textInput.dispatchEvent(new Event('input'));
+                
+                // Auto-detect delimiter for the sample
+                if (csvConverter) {
+                    csvConverter.autoDetectDelimiter(samples[type]);
+                }
+                
+                // Scroll to the converter
+                document.getElementById('csvConverterContainer').scrollIntoView({ 
+                    behavior: 'smooth' 
+                });
+                
+                // Show success message
+                if (csvConverter) {
+                    csvConverter.showMessage(`Sample ${type} data loaded successfully!`, 'success');
+                }
+            }
+        }
+    </script>
+</body>
+</html>

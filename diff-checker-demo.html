@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diff Checker - Text Comparison Tool</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .page-header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+        
+        .page-header h1 {
+            font-size: 2.5rem;
+            margin: 0 0 10px 0;
+            font-weight: 700;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .page-header p {
+            font-size: 1.1rem;
+            margin: 0;
+            opacity: 0.9;
+        }
+        
+        .demo-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .features-info {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+            color: white;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 15px;
+        }
+        
+        .feature-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .feature-item h4 {
+            margin: 0 0 8px 0;
+            font-size: 1.1rem;
+        }
+        
+        .feature-item p {
+            margin: 0;
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        
+        .quick-start {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+            color: white;
+        }
+        
+        .quick-start h3 {
+            margin: 0 0 15px 0;
+            font-size: 1.3rem;
+        }
+        
+        .quick-start ol {
+            margin: 0;
+            padding-left: 20px;
+        }
+        
+        .quick-start li {
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            .page-header h1 {
+                font-size: 2rem;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-header">
+        <h1>🔍 Diff Checker</h1>
+        <p>Advanced Text Comparison & Analysis Tool</p>
+    </div>
+    
+    <div class="demo-container">
+        <div class="features-info">
+            <h3>✨ Key Features</h3>
+            <div class="features-grid">
+                <div class="feature-item">
+                    <h4>🔄 Multiple Algorithms</h4>
+                    <p>Myers, Patience, and Histogram diff algorithms for accurate comparison</p>
+                </div>
+                <div class="feature-item">
+                    <h4>👁️ Dual View Modes</h4>
+                    <p>Side-by-side and unified diff views with syntax highlighting</p>
+                </div>
+                <div class="feature-item">
+                    <h4>⚙️ Smart Options</h4>
+                    <p>Ignore case, whitespace, and other comparison settings</p>
+                </div>
+                <div class="feature-item">
+                    <h4>📁 File Support</h4>
+                    <p>Load and save files, export diff results</p>
+                </div>
+                <div class="feature-item">
+                    <h4>📊 Live Statistics</h4>
+                    <p>Real-time stats for lines, words, characters, and changes</p>
+                </div>
+                <div class="feature-item">
+                    <h4>🕒 History Tracking</h4>
+                    <p>Keep track of recent comparisons and results</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="quick-start">
+            <h3>🚀 Quick Start Guide</h3>
+            <ol>
+                <li><strong>Enter Text:</strong> Paste or type your original text in the left panel and modified text in the right panel</li>
+                <li><strong>Choose Algorithm:</strong> Select Myers (default), Patience, or Histogram diff algorithm</li>
+                <li><strong>Set Options:</strong> Configure ignore case, whitespace, and other comparison settings</li>
+                <li><strong>Compare:</strong> Click "Compare" to see the differences highlighted in your chosen view mode</li>
+                <li><strong>Analyze Results:</strong> Review additions (green), deletions (red), and statistics</li>
+                <li><strong>Export:</strong> Save your results or load/save text files as needed</li>
+            </ol>
+        </div>
+        
+        <!-- Diff Checker Container -->
+        <div id="diffCheckerContainer"></div>
+    </div>
+    
+    <script src="js/utilities/diff-checker.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Initializing Diff Checker...');
+            
+            try {
+                const diffChecker = new DiffCheckerUtility();
+                diffChecker.init('diffCheckerContainer');
+                console.log('Diff Checker initialized successfully');
+                
+                // Add some sample text for demonstration
+                setTimeout(() => {
+                    const leftTextArea = document.querySelector('#diffCheckerContainer .diff-textarea');
+                    const rightTextArea = document.querySelectorAll('#diffCheckerContainer .diff-textarea')[1];
+                    
+                    if (leftTextArea && rightTextArea) {
+                        leftTextArea.value = `function calculateTotal(items) {
+    let total = 0;
+    for (let item of items) {
+        total += item.price;
+    }
+    return total;
+}
+
+const items = [
+    { name: 'Apple', price: 1.50 },
+    { name: 'Banana', price: 0.75 }
+];`;
+                        
+                        rightTextArea.value = `function calculateTotal(items, tax = 0) {
+    let total = 0;
+    for (let item of items) {
+        total += item.price * item.quantity;
+    }
+    return total * (1 + tax);
+}
+
+const items = [
+    { name: 'Apple', price: 1.50, quantity: 2 },
+    { name: 'Banana', price: 0.75, quantity: 3 },
+    { name: 'Orange', price: 2.00, quantity: 1 }
+];`;
+                        
+                        // Trigger stats update
+                        leftTextArea.dispatchEvent(new Event('input'));
+                        rightTextArea.dispatchEvent(new Event('input'));
+                    }
+                }, 500);
+                
+            } catch (error) {
+                console.error('Error initializing Diff Checker:', error);
+                document.getElementById('diffCheckerContainer').innerHTML = 
+                    '<div style="color: red; padding: 20px; text-align: center;">Error loading Diff Checker. Please check the console for details.</div>';
+            }
+        });
+    </script>
+</body>
+</html>

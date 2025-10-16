@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business Card Designer - Professional Card Creation Tool</title>
+    <meta name="description" content="Create professional business cards with our intuitive designer. Choose from templates, customize text, add images, and export high-quality cards.">
+    <meta name="keywords" content="business card, designer, template, professional, card maker, print ready">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/business-card-designer.css">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="Business Card Designer - Professional Card Creation Tool">
+    <meta property="og:description" content="Create professional business cards with our intuitive designer. Choose from templates, customize text, add images, and export high-quality cards.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://yoursite.com/business-card-designer-demo.html">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Business Card Designer - Professional Card Creation Tool">
+    <meta name="twitter:description" content="Create professional business cards with our intuitive designer. Choose from templates, customize text, add images, and export high-quality cards.">
+    
+    <style>
+        /* Additional page-specific styles */
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .page-header {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .page-header .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .page-header h1 {
+            color: white;
+            margin: 0;
+            font-size: 24px;
+            font-weight: 600;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .nav-links a {
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        
+        .nav-links a:hover {
+            color: white;
+        }
+        
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+        
+        .loading-content {
+            text-align: center;
+            color: white;
+        }
+        
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top: 3px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .loading-text {
+            font-size: 18px;
+            font-weight: 500;
+        }
+        
+        .hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        /* Error handling styles */
+        .error-message {
+            background: rgba(220, 53, 69, 0.9);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px;
+            text-align: center;
+            display: none;
+        }
+        
+        /* Feature highlights */
+        .features-banner {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 10px 0;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .features-text {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 14px;
+            margin: 0;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .page-header .container {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .nav-links {
+                gap: 15px;
+            }
+            
+            .nav-links a {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loadingScreen" class="loading-screen">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <div class="loading-text">Loading Business Card Designer...</div>
+        </div>
+    </div>
+    
+    <!-- Error Message -->
+    <div id="errorMessage" class="error-message">
+        <strong>Error:</strong> Failed to load the Business Card Designer. Please refresh the page and try again.
+    </div>
+    
+    <!-- Page Header -->
+    <header class="page-header">
+        <div class="container">
+            <h1>💳 Business Card Designer</h1>
+            <nav class="nav-links">
+                <a href="index.html">🏠 Home</a>
+                <a href="dashboard.html">📊 Dashboard</a>
+                <a href="#" onclick="showHelp()">❓ Help</a>
+                <a href="#" onclick="showAbout()">ℹ️ About</a>
+            </nav>
+        </div>
+    </header>
+    
+    <!-- Features Banner -->
+    <div class="features-banner">
+        <p class="features-text">
+            ✨ Professional Templates • 🎨 Custom Design Tools • 📝 Rich Text Editor • 🖼️ Image Support • 📤 High-Quality Export
+        </p>
+    </div>
+    
+    <!-- Main Application Container -->
+    <main>
+        <div id="business-card-designer-container">
+            <!-- Business Card Designer will be initialized here -->
+        </div>
+    </main>
+    
+    <!-- Help Modal -->
+    <div id="helpModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>❓ Business Card Designer Help</h2>
+                <span class="close" onclick="closeModal('helpModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <h3>🚀 Getting Started</h3>
+                <ul>
+                    <li><strong>Choose a Template:</strong> Select from professional, modern, creative, or minimal designs</li>
+                    <li><strong>Add Text:</strong> Click "Add Text" to create text elements, then customize font, size, and color</li>
+                    <li><strong>Add Images:</strong> Upload your logo or photos using the "Add Image" button</li>
+                    <li><strong>Customize Design:</strong> Change background colors or add background images</li>
+                </ul>
+                
+                <h3>🎨 Design Tools</h3>
+                <ul>
+                    <li><strong>Text Editing:</strong> Select text elements to modify content, font, size, color, and style</li>
+                    <li><strong>Alignment:</strong> Use left, center, right alignment buttons for precise positioning</li>
+                    <li><strong>Layering:</strong> Bring elements forward or send them backward to control overlap</li>
+                    <li><strong>Drag & Drop:</strong> Click and drag elements to reposition them on the card</li>
+                </ul>
+                
+                <h3>💾 Saving & Exporting</h3>
+                <ul>
+                    <li><strong>Save:</strong> Download your design as a JSON file to continue editing later</li>
+                    <li><strong>Load:</strong> Upload a previously saved JSON file to resume editing</li>
+                    <li><strong>Export:</strong> Generate a high-resolution PNG image ready for printing</li>
+                </ul>
+                
+                <h3>⌨️ Keyboard Shortcuts</h3>
+                <ul>
+                    <li><strong>Ctrl+Z:</strong> Undo last action</li>
+                    <li><strong>Ctrl+Y:</strong> Redo last undone action</li>
+                    <li><strong>Delete:</strong> Remove selected element</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <!-- About Modal -->
+    <div id="aboutModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>ℹ️ About Business Card Designer</h2>
+                <span class="close" onclick="closeModal('aboutModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p>The Business Card Designer is a comprehensive tool for creating professional business cards with ease. Whether you're a freelancer, entrepreneur, or business professional, this tool provides everything you need to design stunning cards.</p>
+                
+                <h3>🌟 Key Features</h3>
+                <ul>
+                    <li>🎨 <strong>Professional Templates:</strong> Choose from carefully designed templates</li>
+                    <li>📝 <strong>Rich Text Editor:</strong> Full control over fonts, sizes, colors, and styles</li>
+                    <li>🖼️ <strong>Image Support:</strong> Add logos, photos, and graphics</li>
+                    <li>🎯 <strong>Precise Positioning:</strong> Drag and drop with alignment tools</li>
+                    <li>📐 <strong>Standard Size:</strong> 3.5" × 2" business card format</li>
+                    <li>📤 <strong>High-Quality Export:</strong> 300 DPI print-ready images</li>
+                    <li>💾 <strong>Save & Load:</strong> Continue your work anytime</li>
+                    <li>↶ <strong>Undo/Redo:</strong> Full history management</li>
+                </ul>
+                
+                <h3>🎯 Perfect For</h3>
+                <ul>
+                    <li>Small business owners</li>
+                    <li>Freelancers and consultants</li>
+                    <li>Entrepreneurs</li>
+                    <li>Sales professionals</li>
+                    <li>Creative professionals</li>
+                </ul>
+                
+                <p><strong>Version:</strong> 1.0.0<br>
+                <strong>Last Updated:</strong> 2024<br>
+                <strong>Compatibility:</strong> Modern web browsers</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal Styles -->
+    <style>
+        .modal {
+            position: fixed;
+            z-index: 10000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+        }
+        
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+        
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px 15px 0 0;
+        }
+        
+        .modal-header h2 {
+            margin: 0;
+            font-size: 20px;
+        }
+        
+        .close {
+            color: white;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            line-height: 1;
+        }
+        
+        .close:hover {
+            opacity: 0.7;
+        }
+        
+        .modal-body {
+            padding: 20px;
+            line-height: 1.6;
+        }
+        
+        .modal-body h3 {
+            color: #2c3e50;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        
+        .modal-body ul {
+            padding-left: 20px;
+        }
+        
+        .modal-body li {
+            margin-bottom: 8px;
+        }
+    </style>
+    
+    <!-- Scripts -->
+    <script src="js/utilities/business-card-designer.js"></script>
+    
+    <script>
+        // Global variables
+        let businessCardDesigner = null;
+        
+        // Initialize the application when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            try {
+                // Initialize the Business Card Designer
+                businessCardDesigner = new BusinessCardDesignerUtility();
+                businessCardDesigner.init();
+                
+                // Hide loading screen
+                setTimeout(() => {
+                    const loadingScreen = document.getElementById('loadingScreen');
+                    loadingScreen.classList.add('hidden');
+                    setTimeout(() => {
+                        loadingScreen.style.display = 'none';
+                    }, 500);
+                }, 1000);
+                
+                console.log('Business Card Designer initialized successfully');
+                
+            } catch (error) {
+                console.error('Error initializing Business Card Designer:', error);
+                showError('Failed to initialize the Business Card Designer. Please refresh the page and try again.');
+            }
+        });
+        
+        // Error handling
+        function showError(message) {
+            const errorElement = document.getElementById('errorMessage');
+            errorElement.textContent = message;
+            errorElement.style.display = 'block';
+            
+            // Hide loading screen
+            const loadingScreen = document.getElementById('loadingScreen');
+            loadingScreen.style.display = 'none';
+        }
+        
+        // Modal functions
+        function showHelp() {
+            document.getElementById('helpModal').style.display = 'block';
+        }
+        
+        function showAbout() {
+            document.getElementById('aboutModal').style.display = 'block';
+        }
+        
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+        
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const helpModal = document.getElementById('helpModal');
+            const aboutModal = document.getElementById('aboutModal');
+            
+            if (event.target === helpModal) {
+                helpModal.style.display = 'none';
+            }
+            if (event.target === aboutModal) {
+                aboutModal.style.display = 'none';
+            }
+        }
+        
+        // Keyboard shortcuts for modals
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeModal('helpModal');
+                closeModal('aboutModal');
+            }
+        });
+        
+        // Performance monitoring
+        window.addEventListener('load', function() {
+            if ('performance' in window) {
+                const loadTime = performance.timing.loadEventEnd - performance.timing.navigationStart;
+                console.log('Page load time:', loadTime + 'ms');
+            }
+        });
+        
+        // Error handling for uncaught errors
+        window.addEventListener('error', function(e) {
+            console.error('Uncaught error:', e.error);
+            showError('An unexpected error occurred. Please refresh the page.');
+        });
+        
+        // Handle unhandled promise rejections
+        window.addEventListener('unhandledrejection', function(e) {
+            console.error('Unhandled promise rejection:', e.reason);
+            showError('An unexpected error occurred. Please refresh the page.');
+        });
+    </script>
+</body>
+</html>

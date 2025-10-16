@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chart Generator - Create Beautiful Charts</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+
+        .loading-screen.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 2rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            color: white;
+            font-size: 1.2rem;
+            font-weight: 500;
+        }
+
+        .demo-header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .demo-header h1 {
+            color: #2c3e50;
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+
+        .demo-header p {
+            color: #6c757d;
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto 2rem;
+            line-height: 1.6;
+        }
+
+        .feature-highlights {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .feature-item {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .feature-item:hover {
+            transform: translateY(-2px);
+        }
+
+        .feature-item i {
+            font-size: 2rem;
+            color: #3498db;
+            margin-bottom: 0.5rem;
+        }
+
+        .feature-item h3 {
+            color: #2c3e50;
+            font-size: 1rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .feature-item p {
+            color: #6c757d;
+            font-size: 0.8rem;
+        }
+
+        .quick-start {
+            background: rgba(255, 255, 255, 0.95);
+            margin: 2rem;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .quick-start h2 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .quick-start-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .step {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+
+        .step-number {
+            background: #3498db;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+
+        .step-content h3 {
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .step-content p {
+            color: #6c757d;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .chart-generator-container {
+            background: white;
+            margin: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            min-height: 600px;
+        }
+
+        .keyboard-shortcuts {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(44, 62, 80, 0.9);
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            max-width: 250px;
+            backdrop-filter: blur(10px);
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+        }
+
+        .keyboard-shortcuts.show {
+            transform: translateX(0);
+        }
+
+        .keyboard-shortcuts h4 {
+            margin-bottom: 0.5rem;
+            color: #3498db;
+        }
+
+        .shortcut {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.25rem;
+        }
+
+        .shortcut-key {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.1rem 0.3rem;
+            border-radius: 3px;
+            font-family: monospace;
+            font-size: 0.7rem;
+        }
+
+        .help-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .help-button:hover {
+            background: #2980b9;
+            transform: scale(1.1);
+        }
+
+        .ripple {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ripple::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .ripple:active::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        @media (max-width: 768px) {
+            .demo-header {
+                padding: 1rem;
+            }
+
+            .demo-header h1 {
+                font-size: 2rem;
+            }
+
+            .feature-highlights {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .quick-start {
+                margin: 1rem;
+                padding: 1rem;
+            }
+
+            .quick-start-steps {
+                grid-template-columns: 1fr;
+            }
+
+            .chart-generator-container {
+                margin: 1rem;
+            }
+
+            .keyboard-shortcuts {
+                bottom: 80px;
+                right: 10px;
+                max-width: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Loading Chart Generator...</div>
+    </div>
+
+    <!-- Demo Header -->
+    <div class="demo-header">
+        <h1>📈 Chart Generator</h1>
+        <p>Create stunning, interactive charts from your data with our powerful chart generation tool. Support for multiple chart types, data import, and high-quality exports.</p>
+        
+        <div class="feature-highlights">
+            <div class="feature-item">
+                <i class="fas fa-chart-bar"></i>
+                <h3>Multiple Chart Types</h3>
+                <p>Bar, Line, Pie, Doughnut, Area & Scatter</p>
+            </div>
+            <div class="feature-item">
+                <i class="fas fa-upload"></i>
+                <h3>Data Import</h3>
+                <p>CSV, JSON & Manual Entry</p>
+            </div>
+            <div class="feature-item">
+                <i class="fas fa-palette"></i>
+                <h3>Customization</h3>
+                <p>Colors, Labels & Themes</p>
+            </div>
+            <div class="feature-item">
+                <i class="fas fa-download"></i>
+                <h3>Export Options</h3>
+                <p>PNG, SVG, PDF & Data Formats</p>
+            </div>
+            <div class="feature-item">
+                <i class="fas fa-history"></i>
+                <h3>Undo/Redo</h3>
+                <p>50-Step History System</p>
+            </div>
+            <div class="feature-item">
+                <i class="fas fa-search-plus"></i>
+                <h3>Zoom Controls</h3>
+                <p>Interactive Chart Viewing</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Start Guide -->
+    <div class="quick-start">
+        <h2>🚀 Quick Start Guide</h2>
+        <div class="quick-start-steps">
+            <div class="step">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <h3>Choose Chart Type</h3>
+                    <p>Select from bar, line, pie, doughnut, area, or scatter charts based on your data visualization needs.</p>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <h3>Input Your Data</h3>
+                    <p>Enter data manually, import from CSV/JSON files, or use one of our pre-built templates.</p>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    <h3>Customize Appearance</h3>
+                    <p>Adjust colors, labels, titles, and choose from various color palettes to match your style.</p>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-number">4</div>
+                <div class="step-content">
+                    <h3>Export & Share</h3>
+                    <p>Download your chart as PNG, SVG, PDF, or export the data in JSON/CSV format.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chart Generator Container -->
+    <div class="chart-generator-container" id="chartGeneratorContainer">
+        <!-- Chart Generator will be loaded here -->
+    </div>
+
+    <!-- Help Button -->
+    <button class="help-button ripple" id="helpButton" title="Keyboard Shortcuts">
+        <i class="fas fa-question"></i>
+    </button>
+
+    <!-- Keyboard Shortcuts -->
+    <div class="keyboard-shortcuts" id="keyboardShortcuts">
+        <h4>Keyboard Shortcuts</h4>
+        <div class="shortcut">
+            <span>New Chart</span>
+            <span class="shortcut-key">Ctrl+N</span>
+        </div>
+        <div class="shortcut">
+            <span>Export</span>
+            <span class="shortcut-key">Ctrl+S</span>
+        </div>
+        <div class="shortcut">
+            <span>Undo</span>
+            <span class="shortcut-key">Ctrl+Z</span>
+        </div>
+        <div class="shortcut">
+            <span>Redo</span>
+            <span class="shortcut-key">Ctrl+Shift+Z</span>
+        </div>
+        <div class="shortcut">
+            <span>Zoom In</span>
+            <span class="shortcut-key">Ctrl++</span>
+        </div>
+        <div class="shortcut">
+            <span>Zoom Out</span>
+            <span class="shortcut-key">Ctrl+-</span>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/utilities/chart-generator.js"></script>
+    <script>
+        // Initialize Chart Generator
+        let chartGenerator;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Hide loading screen after a short delay
+            setTimeout(() => {
+                const loadingScreen = document.getElementById('loadingScreen');
+                loadingScreen.classList.add('hidden');
+                
+                // Initialize Chart Generator
+                chartGenerator = new ChartGeneratorUtility();
+                chartGenerator.init('chartGeneratorContainer');
+                
+                // Add welcome message
+                setTimeout(() => {
+                    if (chartGenerator.showNotification) {
+                        chartGenerator.showNotification('Welcome to Chart Generator! Start by selecting a chart type or loading a template.', 'success');
+                    }
+                }, 1000);
+            }, 1500);
+        });
+
+        // Help button functionality
+        document.getElementById('helpButton').addEventListener('click', function() {
+            const shortcuts = document.getElementById('keyboardShortcuts');
+            shortcuts.classList.toggle('show');
+        });
+
+        // Hide shortcuts when clicking outside
+        document.addEventListener('click', function(e) {
+            const shortcuts = document.getElementById('keyboardShortcuts');
+            const helpButton = document.getElementById('helpButton');
+            
+            if (!shortcuts.contains(e.target) && !helpButton.contains(e.target)) {
+                shortcuts.classList.remove('show');
+            }
+        });
+
+        // Handle window resize
+        window.addEventListener('resize', function() {
+            if (chartGenerator && chartGenerator.renderChart) {
+                setTimeout(() => {
+                    chartGenerator.renderChart();
+                }, 100);
+            }
+        });
+
+        // Add ripple effect to buttons
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('ripple')) {
+                const ripple = e.target;
+                const rect = ripple.getBoundingClientRect();
+                const size = Math.max(rect.width, rect.height);
+                const x = e.clientX - rect.left - size / 2;
+                const y = e.clientY - rect.top - size / 2;
+                
+                const rippleElement = document.createElement('span');
+                rippleElement.style.cssText = `
+                    position: absolute;
+                    border-radius: 50%;
+                    background: rgba(255, 255, 255, 0.6);
+                    transform: scale(0);
+                    animation: ripple-animation 0.6s linear;
+                    left: ${x}px;
+                    top: ${y}px;
+                    width: ${size}px;
+                    height: ${size}px;
+                `;
+                
+                ripple.appendChild(rippleElement);
+                
+                setTimeout(() => {
+                    rippleElement.remove();
+                }, 600);
+            }
+        });
+
+        // Add ripple animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes ripple-animation {
+                to {
+                    transform: scale(4);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Performance monitoring
+        window.addEventListener('load', function() {
+            if (window.performance && window.performance.timing) {
+                const loadTime = window.performance.timing.loadEventEnd - window.performance.timing.navigationStart;
+                console.log(`Chart Generator loaded in ${loadTime}ms`);
+            }
+        });
+
+        // Error handling
+        window.addEventListener('error', function(e) {
+            console.error('Chart Generator Error:', e.error);
+            if (chartGenerator && chartGenerator.showNotification) {
+                chartGenerator.showNotification('An error occurred. Please refresh the page.', 'error');
+            }
+        });
+
+        // Prevent context menu on canvas (optional)
+        document.addEventListener('contextmenu', function(e) {
+            if (e.target.tagName === 'CANVAS') {
+                e.preventDefault();
+            }
+        });
+    </script>
+</body>
+</html>

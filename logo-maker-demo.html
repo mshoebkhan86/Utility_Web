@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logo Maker - Professional Logo Design Tool</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            overflow: hidden;
+        }
+        
+        .demo-header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+            position: relative;
+            z-index: 100;
+        }
+        
+        .demo-header h1 {
+            color: #2c3e50;
+            font-size: 2rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .demo-header .subtitle {
+            color: #7f8c8d;
+            font-size: 1rem;
+            margin-top: 0.5rem;
+            font-weight: 400;
+        }
+        
+        .demo-content {
+            height: calc(100vh - 120px);
+            position: relative;
+        }
+        
+        .loading-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.95);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            transition: opacity 0.5s ease;
+        }
+        
+        .loading-screen.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #e3e3e3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 1rem;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .loading-text {
+            color: #2c3e50;
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+        
+        .features-overlay {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            max-width: 300px;
+            z-index: 50;
+            transition: transform 0.3s ease;
+        }
+        
+        .features-overlay:hover {
+            transform: translateY(-2px);
+        }
+        
+        .features-overlay h3 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .feature-list {
+            list-style: none;
+        }
+        
+        .feature-list li {
+            color: #34495e;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .feature-list li i {
+            color: #27ae60;
+            width: 16px;
+        }
+        
+        .quick-start {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            max-width: 280px;
+            z-index: 50;
+        }
+        
+        .quick-start h3 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .quick-start ol {
+            color: #34495e;
+            padding-left: 1.2rem;
+        }
+        
+        .quick-start li {
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+        
+        #logoMakerContainer {
+            height: 100%;
+            width: 100%;
+        }
+        
+        .demo-footer {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            padding: 0.75rem 1.5rem;
+            border-radius: 25px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            z-index: 50;
+        }
+        
+        .demo-footer p {
+            color: #2c3e50;
+            font-size: 0.9rem;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        @media (max-width: 768px) {
+            .features-overlay,
+            .quick-start {
+                position: relative;
+                top: auto;
+                left: auto;
+                right: auto;
+                margin: 1rem;
+                max-width: none;
+            }
+            
+            .demo-content {
+                height: auto;
+                min-height: calc(100vh - 120px);
+            }
+            
+            .demo-footer {
+                position: relative;
+                bottom: auto;
+                left: auto;
+                transform: none;
+                margin: 1rem;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-header">
+        <h1>
+            <i class="fas fa-palette"></i>
+            Logo Maker
+        </h1>
+        <p class="subtitle">Professional logo design tool with templates, shapes, and export options</p>
+    </div>
+    
+    <div class="demo-content">
+        <div class="loading-screen" id="loadingScreen">
+            <div class="spinner"></div>
+            <div class="loading-text">Loading Logo Maker...</div>
+        </div>
+        
+        <div class="features-overlay">
+            <h3><i class="fas fa-star"></i> Features</h3>
+            <ul class="feature-list">
+                <li><i class="fas fa-check"></i> Canvas-based design</li>
+                <li><i class="fas fa-check"></i> Text & shape tools</li>
+                <li><i class="fas fa-check"></i> Professional templates</li>
+                <li><i class="fas fa-check"></i> Color palette</li>
+                <li><i class="fas fa-check"></i> Drag & drop interface</li>
+                <li><i class="fas fa-check"></i> Undo/Redo support</li>
+                <li><i class="fas fa-check"></i> PNG export</li>
+                <li><i class="fas fa-check"></i> Zoom controls</li>
+            </ul>
+        </div>
+        
+        <div class="quick-start">
+            <h3><i class="fas fa-rocket"></i> Quick Start</h3>
+            <ol>
+                <li>Choose a template or start blank</li>
+                <li>Select tools from the sidebar</li>
+                <li>Click on canvas to add elements</li>
+                <li>Use properties panel to customize</li>
+                <li>Drag elements to reposition</li>
+                <li>Export your logo as PNG</li>
+            </ol>
+        </div>
+        
+        <div id="logoMakerContainer"></div>
+        
+        <div class="demo-footer">
+            <p>
+                <i class="fas fa-info-circle"></i>
+                Professional logo design made simple - Create stunning logos in minutes
+            </p>
+        </div>
+    </div>
+    
+    <script src="js/utilities/logo-maker.js"></script>
+    <script>
+        // Initialize the Logo Maker when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            // Hide loading screen after a short delay
+            setTimeout(() => {
+                const loadingScreen = document.getElementById('loadingScreen');
+                loadingScreen.classList.add('hidden');
+                
+                // Initialize Logo Maker
+                if (typeof LogoMakerUtility !== 'undefined') {
+                    window.logoMaker = new LogoMakerUtility();
+                    window.logoMaker.init('logoMakerContainer');
+                } else {
+                    console.error('LogoMakerUtility not found');
+                }
+            }, 1500);
+        });
+        
+        // Handle window resize
+        window.addEventListener('resize', function() {
+            if (window.logoMaker) {
+                window.logoMaker.render();
+            }
+        });
+    </script>
+</body>
+</html>

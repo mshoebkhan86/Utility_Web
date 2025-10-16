@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expense Tracker - Professional Expense Management</title>
+    <meta name="description" content="Professional expense tracking and management tool with categories, budgets, and detailed reporting.">
+    <meta name="keywords" content="expense tracker, budget management, financial tracking, expense reports">
+    <meta name="author" content="Utility Suite">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/expense-tracker.css">
+    
+    <!-- External Fonts and Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Chart.js for analytics -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="Expense Tracker - Professional Expense Management">
+    <meta property="og:description" content="Track expenses, manage budgets, and generate detailed reports with our professional expense management tool.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="expense-tracker-demo.html">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Expense Tracker - Professional Expense Management">
+    <meta name="twitter:description" content="Track expenses, manage budgets, and generate detailed reports with our professional expense management tool.">
+    
+    <style>
+        /* Page-specific professional styles */
+        .back-link {
+            position: fixed;
+            top: var(--spacing-xl);
+            left: var(--spacing-xl);
+            z-index: 1000;
+            background: rgba(59, 130, 246, 0.1);
+            backdrop-filter: blur(20px);
+            padding: var(--spacing-md) var(--spacing-xl);
+            border-radius: var(--radius-full);
+            text-decoration: none;
+            color: var(--primary);
+            font-weight: 600;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            transition: all var(--transition-normal);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .back-link:hover {
+            background: rgba(59, 130, 246, 0.2);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-xl);
+        }
+        
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity var(--transition-slow);
+        }
+        
+        .loading-content {
+            text-align: center;
+            color: var(--white);
+        }
+        
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid var(--white);
+            border-radius: var(--radius-full);
+            animation: spin 1s linear infinite;
+            margin: 0 auto var(--spacing-xl);
+        }
+        
+        .error-message {
+            background: var(--error-light);
+            color: var(--error-dark);
+            padding: var(--spacing-lg);
+            border-radius: var(--radius-md);
+            margin: var(--spacing-xl);
+            border: 1px solid var(--error);
+            display: none;
+        }
+        
+        /* Modal Styles */
+        .help-modal,
+        .about-modal {
+            display: none;
+        }
+        
+        .modal-content h4 {
+            color: var(--primary);
+            margin-bottom: var(--spacing-lg);
+            font-size: var(--text-lg);
+            font-weight: var(--font-semibold);
+        }
+        
+        .modal-content ul {
+            padding-left: var(--spacing-xl);
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .modal-content li {
+            margin-bottom: var(--spacing-sm);
+            line-height: var(--leading-relaxed);
+        }
+        
+        .keyboard-shortcuts {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: var(--spacing-md);
+            margin-top: var(--spacing-lg);
+        }
+        
+        .shortcut-key {
+            background: var(--gray-100);
+            padding: var(--spacing-xs) var(--spacing-sm);
+            border-radius: var(--radius-sm);
+            font-family: var(--font-mono);
+            font-weight: var(--font-bold);
+            border: 1px solid var(--gray-300);
+            font-size: var(--text-sm);
+        }
+        
+        .feature-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--spacing-lg);
+            margin-top: var(--spacing-lg);
+        }
+        
+        .feature-item {
+            border-left: 4px solid var(--primary);
+            padding: var(--spacing-md);
+            background: var(--white);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .feature-item h5 {
+            margin: 0 0 var(--spacing-sm) 0;
+            color: var(--primary);
+            font-size: var(--text-sm);
+            font-weight: var(--font-semibold);
+        }
+        
+        .feature-item p {
+            margin: 0;
+            font-size: var(--text-xs);
+            color: var(--gray-600);
+            line-height: var(--leading-relaxed);
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <h3>Loading Expense Tracker...</h3>
+            <p>Initializing your financial management tools</p>
+        </div>
+    </div>
+    
+    <!-- Back to Dashboard Link -->
+    <a href="index.html" class="back-link" title="Back to Dashboard">
+        <i class="fas fa-arrow-left"></i>
+        Dashboard
+    </a>
+    
+    <!-- Error Message -->
+    <div class="error-message" id="errorMessage">
+        <strong>Error:</strong> <span id="errorText"></span>
+    </div>
+    
+    <!-- Main Application Container -->
+    <div id="expenseTrackerApp" class="container"></div>
+    
+    <!-- Help Modal -->
+    <div class="modal help-modal" id="helpModal">
+        <div class="modal-content modal-lg">
+            <div class="modal-header">
+                <h3 class="text-xl font-semibold text-primary"><i class="fas fa-question-circle mr-2"></i> Expense Tracker Help</h3>
+                <button class="btn btn-icon btn-outline" onclick="closeModal('helpModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h4>Getting Started</h4>
+                <ul>
+                    <li><strong>Dashboard:</strong> View your expense overview, statistics, and recent transactions</li>
+                    <li><strong>Add Expense:</strong> Click the "Add Expense" button to record new expenses</li>
+                    <li><strong>Categories:</strong> Organize expenses by categories for better tracking</li>
+                    <li><strong>Reports:</strong> Generate detailed reports for analysis and tax purposes</li>
+                    <li><strong>Budgets:</strong> Set and monitor spending limits for different categories</li>
+                </ul>
+                
+                <h4>Features</h4>
+                <div class="feature-list">
+                    <div class="feature-item">
+                        <h5>Expense Management</h5>
+                        <p>Add, edit, and delete expenses with detailed information including receipts</p>
+                    </div>
+                    <div class="feature-item">
+                        <h5>Category Organization</h5>
+                        <p>Organize expenses into customizable categories for better tracking</p>
+                    </div>
+                    <div class="feature-item">
+                        <h5>Budget Tracking</h5>
+                        <p>Set spending limits and monitor your progress against budgets</p>
+                    </div>
+                    <div class="feature-item">
+                        <h5>Detailed Reports</h5>
+                        <p>Generate comprehensive reports for analysis and tax preparation</p>
+                    </div>
+                    <div class="feature-item">
+                        <h5>Receipt Management</h5>
+                        <p>Upload and attach receipt images to your expense records</p>
+                    </div>
+                    <div class="feature-item">
+                        <h5>Data Export</h5>
+                        <p>Export your data in various formats for external use</p>
+                    </div>
+                </div>
+                
+                <h4>Keyboard Shortcuts</h4>
+                <div class="keyboard-shortcuts">
+                    <span class="shortcut-key">Ctrl + N</span>
+                    <span>Add New Expense</span>
+                    <span class="shortcut-key">Ctrl + S</span>
+                    <span>Save Current Data</span>
+                    <span class="shortcut-key">Ctrl + E</span>
+                    <span>Export Data</span>
+                    <span class="shortcut-key">Ctrl + F</span>
+                    <span>Search Expenses</span>
+                    <span class="shortcut-key">Esc</span>
+                    <span>Close Modal/Cancel</span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('helpModal')">
+                    <i class="fas fa-times mr-2"></i> Close
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- About Modal -->
+    <div class="modal about-modal" id="aboutModal">
+        <div class="modal-content modal-lg">
+            <div class="modal-header">
+                <h3 class="text-xl font-semibold text-primary"><i class="fas fa-info-circle mr-2"></i> About Expense Tracker</h3>
+                <button class="btn btn-icon btn-outline" onclick="closeModal('aboutModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h4>Professional Expense Management</h4>
+                <p>The Expense Tracker is a comprehensive financial management tool designed to help individuals and businesses track, categorize, and analyze their expenses with precision and ease.</p>
+                
+                <h4>Key Capabilities</h4>
+                <ul>
+                    <li>Comprehensive expense tracking with detailed categorization</li>
+                    <li>Advanced budget management and monitoring</li>
+                    <li>Professional reporting and analytics</li>
+                    <li>Receipt management and storage</li>
+                    <li>Data import/export functionality</li>
+                    <li>Responsive design for all devices</li>
+                </ul>
+                
+                <h4>Technology</h4>
+                <p>Built with modern web technologies including HTML5, CSS3, and JavaScript. Features Chart.js for data visualization and responsive design for optimal user experience across all devices.</p>
+                
+                <h4>Data Privacy</h4>
+                <p>All your financial data is stored locally in your browser. No data is transmitted to external servers, ensuring complete privacy and security of your financial information.</p>
+                
+                <h4>Version Information</h4>
+                <p><strong>Version:</strong> 1.0.0<br>
+                <strong>Last Updated:</strong> <span id="lastUpdated"></span><br>
+                <strong>Compatibility:</strong> Modern browsers with JavaScript enabled</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('aboutModal')">
+                    <i class="fas fa-times mr-2"></i> Close
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Scripts -->
+    <script src="js/utilities/expense-tracker.js"></script>
+    
+    <script>
+        // Application initialization
+        document.addEventListener('DOMContentLoaded', function() {
+            try {
+                // Initialize the Expense Tracker
+                if (typeof window.ExpenseTrackerUtility !== 'undefined') {
+                    window.expenseTracker = new window.ExpenseTrackerUtility();
+                    window.expenseTracker.init('expenseTrackerApp');
+                    
+                    // Hide loading screen after initialization
+                    setTimeout(() => {
+                        const loadingScreen = document.getElementById('loadingScreen');
+                        if (loadingScreen) {
+                            loadingScreen.style.opacity = '0';
+                            setTimeout(() => {
+                                loadingScreen.style.display = 'none';
+                            }, 500);
+                        }
+                    }, 1000);
+                    
+                    // Set last updated date
+                    const lastUpdatedElement = document.getElementById('lastUpdated');
+                    if (lastUpdatedElement) {
+                        lastUpdatedElement.textContent = new Date().toLocaleDateString();
+                    }
+                    
+                } else {
+                    throw new Error('ExpenseTrackerUtility class not found');
+                }
+            } catch (error) {
+                console.error('Error initializing Expense Tracker:', error);
+                showError('Failed to initialize Expense Tracker: ' + error.message);
+                
+                // Hide loading screen on error
+                const loadingScreen = document.getElementById('loadingScreen');
+                if (loadingScreen) {
+                    loadingScreen.style.display = 'none';
+                }
+            }
+        });
+        
+        // Error handling
+        function showError(message) {
+            const errorMessage = document.getElementById('errorMessage');
+            const errorText = document.getElementById('errorText');
+            if (errorMessage && errorText) {
+                errorText.textContent = message;
+                errorMessage.style.display = 'block';
+            }
+        }
+        
+        // Modal management
+        function openModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+            }
+        }
+        
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+        }
+        
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            // Close modals with Escape key
+            if (e.key === 'Escape') {
+                const modals = document.querySelectorAll('.modal');
+                modals.forEach(modal => {
+                    if (modal.style.display === 'flex') {
+                        modal.style.display = 'none';
+                        document.body.style.overflow = 'auto';
+                    }
+                });
+            }
+            
+            // Global shortcuts (only when no modal is open)
+            const isModalOpen = Array.from(document.querySelectorAll('.modal')).some(modal => 
+                modal.style.display === 'flex'
+            );
+            
+            if (!isModalOpen && window.expenseTracker) {
+                if (e.ctrlKey || e.metaKey) {
+                    switch(e.key.toLowerCase()) {
+                        case 'n':
+                            e.preventDefault();
+                            if (typeof window.expenseTracker.showAddExpenseModal === 'function') {
+                                window.expenseTracker.showAddExpenseModal();
+                            }
+                            break;
+                        case 's':
+                            e.preventDefault();
+                            if (typeof window.expenseTracker.saveData === 'function') {
+                                window.expenseTracker.saveData();
+                                window.expenseTracker.showNotification('Data saved successfully', 'success');
+                            }
+                            break;
+                        case 'e':
+                            e.preventDefault();
+                            if (typeof window.expenseTracker.exportData === 'function') {
+                                window.expenseTracker.exportData();
+                            }
+                            break;
+                        case 'f':
+                            e.preventDefault();
+                            const searchInput = document.querySelector('.search-box input');
+                            if (searchInput) {
+                                searchInput.focus();
+                            }
+                            break;
+                    }
+                }
+            }
+        });
+        
+        // Click outside modal to close
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('modal')) {
+                e.target.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+        });
+        
+        // Prevent form submission on Enter in search fields
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && e.target.type === 'search') {
+                e.preventDefault();
+            }
+        });
+        
+        // Handle browser back/forward navigation
+        window.addEventListener('popstate', function(e) {
+            if (window.expenseTracker && typeof window.expenseTracker.handleNavigation === 'function') {
+                window.expenseTracker.handleNavigation(e.state);
+            }
+        });
+        
+        // Auto-save functionality
+        let autoSaveInterval;
+        function startAutoSave() {
+            autoSaveInterval = setInterval(() => {
+                if (window.expenseTracker && typeof window.expenseTracker.saveData === 'function') {
+                    window.expenseTracker.saveData();
+                }
+            }, 30000); // Auto-save every 30 seconds
+        }
+        
+        function stopAutoSave() {
+            if (autoSaveInterval) {
+                clearInterval(autoSaveInterval);
+            }
+        }
+        
+        // Start auto-save when page loads
+        window.addEventListener('load', startAutoSave);
+        
+        // Stop auto-save when page unloads
+        window.addEventListener('beforeunload', function() {
+            stopAutoSave();
+            if (window.expenseTracker && typeof window.expenseTracker.saveData === 'function') {
+                window.expenseTracker.saveData();
+            }
+        });
+        
+        // Handle visibility change (tab switching)
+        document.addEventListener('visibilitychange', function() {
+            if (document.hidden) {
+                stopAutoSave();
+                if (window.expenseTracker && typeof window.expenseTracker.saveData === 'function') {
+                    window.expenseTracker.saveData();
+                }
+            } else {
+                startAutoSave();
+            }
+        });
+        
+        // Expose modal functions globally for button onclick handlers
+        window.openModal = openModal;
+        window.closeModal = closeModal;
+    </script>
+</body>
+</html>

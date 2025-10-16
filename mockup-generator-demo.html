@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mockup Generator - Professional Device Mockups</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+        
+        .loading-screen.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        .loading-logo {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            animation: bounce 2s infinite;
+        }
+        
+        .loading-text {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+        }
+        
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-20px);
+            }
+            60% {
+                transform: translateY(-10px);
+            }
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .demo-header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .demo-title {
+            font-size: 3rem;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .demo-subtitle {
+            font-size: 1.2rem;
+            color: #666;
+            margin-bottom: 2rem;
+        }
+        
+        .feature-highlights {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .feature-card {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .feature-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+        
+        .feature-description {
+            font-size: 0.9rem;
+            color: #666;
+            line-height: 1.4;
+        }
+        
+        .quick-start {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 2rem;
+            margin: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        .quick-start h3 {
+            font-size: 1.5rem;
+            color: #333;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        
+        .quick-start-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .step {
+            text-align: center;
+            padding: 1rem;
+        }
+        
+        .step-number {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-radius: 50%;
+            line-height: 30px;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .step-text {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .mockup-container {
+            margin: 2rem;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        @media (max-width: 768px) {
+            .demo-title {
+                font-size: 2rem;
+            }
+            
+            .demo-header {
+                padding: 1rem;
+            }
+            
+            .feature-highlights {
+                grid-template-columns: 1fr;
+            }
+            
+            .quick-start {
+                margin: 1rem;
+                padding: 1rem;
+            }
+            
+            .mockup-container {
+                margin: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-logo">📱</div>
+        <div class="loading-text">Mockup Generator</div>
+        <div class="loading-spinner"></div>
+    </div>
+    
+    <!-- Demo Header -->
+    <div class="demo-header">
+        <h1 class="demo-title">📱 Mockup Generator</h1>
+        <p class="demo-subtitle">Create professional device mockups with ease</p>
+        
+        <div class="feature-highlights">
+            <div class="feature-card">
+                <div class="feature-icon">📱</div>
+                <div class="feature-title">Multiple Devices</div>
+                <div class="feature-description">iPhone, iPad, MacBook, iMac, Android, and Samsung devices</div>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🎨</div>
+                <div class="feature-title">Custom Backgrounds</div>
+                <div class="feature-description">Colors, gradients, and custom images for perfect presentation</div>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📸</div>
+                <div class="feature-title">Image Upload</div>
+                <div class="feature-description">Upload your screenshots and position them perfectly</div>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">💾</div>
+                <div class="feature-title">High-Quality Export</div>
+                <div class="feature-description">Export as PNG with full resolution for presentations</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Quick Start Guide -->
+    <div class="quick-start">
+        <h3>🚀 Quick Start Guide</h3>
+        <div class="quick-start-steps">
+            <div class="step">
+                <div class="step-number">1</div>
+                <div class="step-text">Choose your device from the sidebar</div>
+            </div>
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-text">Upload your screenshot or image</div>
+            </div>
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-text">Adjust position, scale, and rotation</div>
+            </div>
+            <div class="step">
+                <div class="step-number">4</div>
+                <div class="step-text">Customize background and add text</div>
+            </div>
+            <div class="step">
+                <div class="step-number">5</div>
+                <div class="step-text">Export your professional mockup</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Mockup Generator Container -->
+    <div class="mockup-container">
+        <div id="mockupGeneratorContainer"></div>
+    </div>
+    
+    <!-- Load Mockup Generator Script -->
+    <script src="js/utilities/mockup-generator.js"></script>
+    
+    <script>
+        // Initialize the Mockup Generator when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            // Hide loading screen after a short delay
+            setTimeout(() => {
+                const loadingScreen = document.getElementById('loadingScreen');
+                loadingScreen.classList.add('hidden');
+                
+                // Initialize Mockup Generator
+                if (typeof MockupGeneratorUtility !== 'undefined') {
+                    window.mockupGenerator = new MockupGeneratorUtility();
+                    window.mockupGenerator.init('mockupGeneratorContainer');
+                } else {
+                    console.error('MockupGeneratorUtility not loaded');
+                }
+            }, 1500);
+        });
+        
+        // Handle window resize
+        window.addEventListener('resize', function() {
+            if (window.mockupGenerator && window.mockupGenerator.renderMockup) {
+                window.mockupGenerator.renderMockup();
+            }
+        });
+        
+        // Keyboard shortcuts info
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'F1') {
+                e.preventDefault();
+                alert('Keyboard Shortcuts:\n\nCtrl+Z: Undo\nCtrl+Shift+Z: Redo\nCtrl+N: New Mockup\nCtrl+S: Export Mockup\n\nUse the sidebar to select devices, upload images, and customize your mockup!');
+            }
+        });
+        
+        // Add some interactive features
+        document.addEventListener('click', function(e) {
+            // Add ripple effect to buttons
+            if (e.target.tagName === 'BUTTON') {
+                const ripple = document.createElement('span');
+                const rect = e.target.getBoundingClientRect();
+                const size = Math.max(rect.width, rect.height);
+                const x = e.clientX - rect.left - size / 2;
+                const y = e.clientY - rect.top - size / 2;
+                
+                ripple.style.cssText = `
+                    position: absolute;
+                    width: ${size}px;
+                    height: ${size}px;
+                    left: ${x}px;
+                    top: ${y}px;
+                    background: rgba(255, 255, 255, 0.5);
+                    border-radius: 50%;
+                    transform: scale(0);
+                    animation: ripple 0.6s linear;
+                    pointer-events: none;
+                `;
+                
+                if (!e.target.style.position || e.target.style.position === 'static') {
+                    e.target.style.position = 'relative';
+                }
+                
+                e.target.appendChild(ripple);
+                
+                setTimeout(() => {
+                    ripple.remove();
+                }, 600);
+            }
+        });
+        
+        // Add CSS for ripple animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes ripple {
+                to {
+                    transform: scale(4);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XML to JSON Converter - Utility Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+            margin-bottom: 30px;
+        }
+
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            text-decoration: none;
+            padding: 12px 20px;
+            border-radius: 25px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .back-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .main-content {
+            padding: 40px;
+        }
+
+        .info-section {
+            padding: 40px;
+            background: #f8f9fa;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .info-card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .info-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .info-card i {
+            font-size: 3em;
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+
+        .info-card h3 {
+            font-size: 1.3em;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .info-card p {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .features-section {
+            background: white;
+            padding: 40px;
+        }
+
+        .features-section h2 {
+            text-align: center;
+            font-size: 2.2em;
+            margin-bottom: 40px;
+            color: #333;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .feature-item {
+            padding: 25px;
+            border: 2px solid #f0f0f0;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .feature-item:hover {
+            border-color: #667eea;
+            background: #f8f9ff;
+        }
+
+        .feature-item h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+
+        .feature-item p {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .shortcuts-section {
+            background: #f8f9fa;
+            padding: 40px;
+        }
+
+        .shortcuts-section h2 {
+            text-align: center;
+            font-size: 2em;
+            margin-bottom: 30px;
+            color: #333;
+        }
+
+        .shortcuts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .shortcut-item {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .shortcut-key {
+            background: #667eea;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+        }
+
+        .sample-section {
+            background: white;
+            padding: 40px;
+        }
+
+        .sample-section h2 {
+            text-align: center;
+            font-size: 2em;
+            margin-bottom: 30px;
+            color: #333;
+        }
+
+        .sample-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+        }
+
+        .sample-card {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 25px;
+            border-left: 4px solid #667eea;
+        }
+
+        .sample-card h4 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+
+        .sample-code {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            overflow-x: auto;
+            margin-bottom: 15px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .sample-button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s ease;
+        }
+
+        .sample-button:hover {
+            background: #5a6fd8;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 30px 20px;
+            }
+
+            .header h1 {
+                font-size: 2em;
+            }
+
+            .main-content,
+            .info-section,
+            .features-section,
+            .shortcuts-section,
+            .sample-section {
+                padding: 30px 20px;
+            }
+
+            .back-button {
+                position: static;
+                display: inline-block;
+                margin-bottom: 20px;
+            }
+
+            .info-grid,
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <a href="index.html" class="back-button">
+                <i class="fas fa-arrow-left"></i>
+                Back to Dashboard
+            </a>
+            <h1><i class="fas fa-code"></i> XML to JSON Converter</h1>
+            <p>Transform XML documents into JSON format with advanced parsing options and validation</p>
+        </div>
+
+        <div class="main-content">
+            <div id="xmlConverterContainer"></div>
+        </div>
+
+        <div class="info-section">
+            <div class="info-grid">
+                <div class="info-card">
+                    <i class="fas fa-file-code"></i>
+                    <h3>Smart XML Parsing</h3>
+                    <p>Advanced XML parser that handles attributes, CDATA, comments, and complex nested structures with precision</p>
+                </div>
+                <div class="info-card">
+                    <i class="fas fa-cogs"></i>
+                    <h3>Flexible Configuration</h3>
+                    <p>Customize attribute handling, array conversion, text keys, and output formatting to match your requirements</p>
+                </div>
+                <div class="info-card">
+                    <i class="fas fa-eye"></i>
+                    <h3>Structure Preview</h3>
+                    <p>Visualize XML structure in a tree format before conversion to ensure proper understanding of the data</p>
+                </div>
+                <div class="info-card">
+                    <i class="fas fa-shield-alt"></i>
+                    <h3>Validation & Analysis</h3>
+                    <p>Built-in XML validation with detailed error reporting and structural analysis for quality assurance</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="features-section">
+            <h2>Advanced Features</h2>
+            <div class="features-grid">
+                <div class="feature-item">
+                    <h4><i class="fas fa-tags"></i> Attribute Preservation</h4>
+                    <p>Maintains XML attributes in JSON output with customizable prefixes, ensuring no data loss during conversion.</p>
+                </div>
+                <div class="feature-item">
+                    <h4><i class="fas fa-list"></i> Array Handling</h4>
+                    <p>Intelligent array detection for repeated elements with options for auto-detection, forced arrays, or single values.</p>
+                </div>
+                <div class="feature-item">
+                    <h4><i class="fas fa-compress-alt"></i> Output Optimization</h4>
+                    <p>Compact output mode removes empty objects and arrays, while pretty-print ensures readable formatting.</p>
+                </div>
+                <div class="feature-item">
+                    <h4><i class="fas fa-history"></i> Conversion History</h4>
+                    <p>Track conversion statistics, performance metrics, and settings for analysis and optimization purposes.</p>
+                </div>
+                <div class="feature-item">
+                    <h4><i class="fas fa-code-branch"></i> CDATA & Comments</h4>
+                    <p>Preserves CDATA sections and XML comments in the JSON output with configurable key names.</p>
+                </div>
+                <div class="feature-item">
+                    <h4><i class="fas fa-download"></i> Export Options</h4>
+                    <p>Download converted JSON files, copy to clipboard, or format for different use cases and integrations.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="shortcuts-section">
+            <h2>Keyboard Shortcuts</h2>
+            <div class="shortcuts-grid">
+                <div class="shortcut-item">
+                    <span>Convert to JSON</span>
+                    <span class="shortcut-key">Ctrl + Enter</span>
+                </div>
+                <div class="shortcut-item">
+                    <span>Validate XML</span>
+                    <span class="shortcut-key">Ctrl + V</span>
+                </div>
+                <div class="shortcut-item">
+                    <span>Preview Structure</span>
+                    <span class="shortcut-key">Ctrl + P</span>
+                </div>
+                <div class="shortcut-item">
+                    <span>Clear All</span>
+                    <span class="shortcut-key">Ctrl + Delete</span>
+                </div>
+                <div class="shortcut-item">
+                    <span>Copy JSON</span>
+                    <span class="shortcut-key">Ctrl + C</span>
+                </div>
+                <div class="shortcut-item">
+                    <span>Download JSON</span>
+                    <span class="shortcut-key">Ctrl + S</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="sample-section">
+            <h2>Sample XML Data</h2>
+            <p style="text-align: center; margin-bottom: 30px; color: #666;">Click any sample below to load it into the converter</p>
+            <div class="sample-grid">
+                <div class="sample-card">
+                    <h4>Simple Book Catalog</h4>
+                    <div class="sample-code">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;catalog&gt;
+  &lt;book id="1" category="fiction"&gt;
+    &lt;title&gt;The Great Gatsby&lt;/title&gt;
+    &lt;author&gt;F. Scott Fitzgerald&lt;/author&gt;
+    &lt;year&gt;1925&lt;/year&gt;
+    &lt;price currency="USD"&gt;12.99&lt;/price&gt;
+  &lt;/book&gt;
+  &lt;book id="2" category="fiction"&gt;
+    &lt;title&gt;To Kill a Mockingbird&lt;/title&gt;
+    &lt;author&gt;Harper Lee&lt;/author&gt;
+    &lt;year&gt;1960&lt;/year&gt;
+    &lt;price currency="USD"&gt;14.99&lt;/price&gt;
+  &lt;/book&gt;
+&lt;/catalog&gt;</div>
+                    <button class="sample-button" onclick="loadSampleData('books')">Load Sample</button>
+                </div>
+                <div class="sample-card">
+                    <h4>Employee Directory</h4>
+                    <div class="sample-code">&lt;?xml version="1.0"?&gt;
+&lt;employees&gt;
+  &lt;employee id="E001" active="true"&gt;
+    &lt;name&gt;
+      &lt;first&gt;John&lt;/first&gt;
+      &lt;last&gt;Doe&lt;/last&gt;
+    &lt;/name&gt;
+    &lt;department&gt;Engineering&lt;/department&gt;
+    &lt;salary&gt;75000&lt;/salary&gt;
+    &lt;skills&gt;
+      &lt;skill level="expert"&gt;JavaScript&lt;/skill&gt;
+      &lt;skill level="intermediate"&gt;Python&lt;/skill&gt;
+    &lt;/skills&gt;
+  &lt;/employee&gt;
+  &lt;employee id="E002" active="true"&gt;
+    &lt;name&gt;
+      &lt;first&gt;Jane&lt;/first&gt;
+      &lt;last&gt;Smith&lt;/last&gt;
+    &lt;/name&gt;
+    &lt;department&gt;Marketing&lt;/department&gt;
+    &lt;salary&gt;65000&lt;/salary&gt;
+  &lt;/employee&gt;
+&lt;/employees&gt;</div>
+                    <button class="sample-button" onclick="loadSampleData('employees')">Load Sample</button>
+                </div>
+                <div class="sample-card">
+                    <h4>Product Inventory</h4>
+                    <div class="sample-code">&lt;inventory&gt;
+  &lt;product sku="P001" available="true"&gt;
+    &lt;name&gt;Laptop Computer&lt;/name&gt;
+    &lt;category&gt;Electronics&lt;/category&gt;
+    &lt;price&gt;999.99&lt;/price&gt;
+    &lt;stock&gt;50&lt;/stock&gt;
+    &lt;description&gt;&lt;![CDATA[High-performance laptop with 16GB RAM and 512GB SSD]]&gt;&lt;/description&gt;
+    &lt;tags&gt;
+      &lt;tag&gt;laptop&lt;/tag&gt;
+      &lt;tag&gt;computer&lt;/tag&gt;
+      &lt;tag&gt;electronics&lt;/tag&gt;
+    &lt;/tags&gt;
+  &lt;/product&gt;
+  &lt;product sku="P002" available="false"&gt;
+    &lt;name&gt;Wireless Mouse&lt;/name&gt;
+    &lt;category&gt;Accessories&lt;/category&gt;
+    &lt;price&gt;29.99&lt;/price&gt;
+    &lt;stock&gt;0&lt;/stock&gt;
+  &lt;/product&gt;
+&lt;/inventory&gt;</div>
+                    <button class="sample-button" onclick="loadSampleData('products')">Load Sample</button>
+                </div>
+                <div class="sample-card">
+                    <h4>Configuration File</h4>
+                    <div class="sample-code">&lt;?xml version="1.0"?&gt;
+&lt;configuration&gt;
+  &lt;database&gt;
+    &lt;host&gt;localhost&lt;/host&gt;
+    &lt;port&gt;5432&lt;/port&gt;
+    &lt;name&gt;myapp_db&lt;/name&gt;
+    &lt;credentials&gt;
+      &lt;username&gt;admin&lt;/username&gt;
+      &lt;password encrypted="true"&gt;***&lt;/password&gt;
+    &lt;/credentials&gt;
+  &lt;/database&gt;
+  &lt;features&gt;
+    &lt;feature name="logging" enabled="true" /&gt;
+    &lt;feature name="caching" enabled="false" /&gt;
+    &lt;feature name="analytics" enabled="true" /&gt;
+  &lt;/features&gt;
+  &lt;!-- Application settings --&gt;
+  &lt;settings&gt;
+    &lt;debug&gt;false&lt;/debug&gt;
+    &lt;timeout&gt;30&lt;/timeout&gt;
+  &lt;/settings&gt;
+&lt;/configuration&gt;</div>
+                    <button class="sample-button" onclick="loadSampleData('config')">Load Sample</button>
+                </div>
+                <div class="sample-card">
+                    <h4>RSS Feed</h4>
+                    <div class="sample-code">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;rss version="2.0"&gt;
+  &lt;channel&gt;
+    &lt;title&gt;Tech News&lt;/title&gt;
+    &lt;description&gt;Latest technology news and updates&lt;/description&gt;
+    &lt;link&gt;https://example.com&lt;/link&gt;
+    &lt;item&gt;
+      &lt;title&gt;New JavaScript Framework Released&lt;/title&gt;
+      &lt;description&gt;&lt;![CDATA[A revolutionary new framework that simplifies web development]]&gt;&lt;/description&gt;
+      &lt;pubDate&gt;Mon, 15 Jan 2024 10:00:00 GMT&lt;/pubDate&gt;
+      &lt;link&gt;https://example.com/news/1&lt;/link&gt;
+    &lt;/item&gt;
+    &lt;item&gt;
+      &lt;title&gt;AI Breakthrough in Machine Learning&lt;/title&gt;
+      &lt;description&gt;Scientists achieve new milestone in artificial intelligence&lt;/description&gt;
+      &lt;pubDate&gt;Sun, 14 Jan 2024 15:30:00 GMT&lt;/pubDate&gt;
+      &lt;link&gt;https://example.com/news/2&lt;/link&gt;
+    &lt;/item&gt;
+  &lt;/channel&gt;
+&lt;/rss&gt;</div>
+                    <button class="sample-button" onclick="loadSampleData('rss')">Load Sample</button>
+                </div>
+                <div class="sample-card">
+                    <h4>Complex Nested Structure</h4>
+                    <div class="sample-code">&lt;company&gt;
+  &lt;info name="TechCorp" founded="2010"&gt;
+    &lt;address&gt;
+      &lt;street&gt;123 Tech Street&lt;/street&gt;
+      &lt;city&gt;San Francisco&lt;/city&gt;
+      &lt;state&gt;CA&lt;/state&gt;
+      &lt;zip&gt;94105&lt;/zip&gt;
+    &lt;/address&gt;
+    &lt;contact&gt;
+      &lt;phone type="main"&gt;+1-555-0123&lt;/phone&gt;
+      &lt;phone type="support"&gt;+1-555-0124&lt;/phone&gt;
+      &lt;email&gt;info@techcorp.com&lt;/email&gt;
+    &lt;/contact&gt;
+  &lt;/info&gt;
+  &lt;departments&gt;
+    &lt;department id="eng" budget="1000000"&gt;
+      &lt;name&gt;Engineering&lt;/name&gt;
+      &lt;head&gt;John Smith&lt;/head&gt;
+      &lt;teams&gt;
+        &lt;team name="Frontend" size="5" /&gt;
+        &lt;team name="Backend" size="8" /&gt;
+        &lt;team name="DevOps" size="3" /&gt;
+      &lt;/teams&gt;
+    &lt;/department&gt;
+  &lt;/departments&gt;
+&lt;/company&gt;</div>
+                    <button class="sample-button" onclick="loadSampleData('complex')">Load Sample</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Include the XML to JSON utility -->
+    <script src="js/utilities/xml-to-json.js"></script>
+    
+    <script>
+        // Initialize the XML to JSON converter
+        let xmlConverter;
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize the converter
+            xmlConverter = new XmlToJsonUtility();
+            xmlConverter.init();
+            
+            // Create the interface
+            const container = document.getElementById('xmlConverterContainer');
+            xmlConverter.createInterface(container);
+            
+            // Add additional keyboard shortcuts
+            document.addEventListener('keydown', function(e) {
+                if (e.ctrlKey) {
+                    switch(e.key) {
+                        case 'v':
+                            if (document.getElementById('xmlTextInput')?.value.trim()) {
+                                e.preventDefault();
+                                document.getElementById('validateBtn')?.click();
+                            }
+                            break;
+                    }
+                }
+            });
+        });
+        
+        // Sample data loader
+        function loadSampleData(type) {
+            const samples = {
+                books: `<?xml version="1.0" encoding="UTF-8"?>
+<catalog>
+  <book id="1" category="fiction">
+    <title>The Great Gatsby</title>
+    <author>F. Scott Fitzgerald</author>
+    <year>1925</year>
+    <price currency="USD">12.99</price>
+    <isbn>978-0-7432-7356-5</isbn>
+    <available>true</available>
+  </book>
+  <book id="2" category="fiction">
+    <title>To Kill a Mockingbird</title>
+    <author>Harper Lee</author>
+    <year>1960</year>
+    <price currency="USD">14.99</price>
+    <isbn>978-0-06-112008-4</isbn>
+    <available>true</available>
+  </book>
+  <book id="3" category="science">
+    <title>A Brief History of Time</title>
+    <author>Stephen Hawking</author>
+    <year>1988</year>
+    <price currency="USD">16.99</price>
+    <isbn>978-0-553-38016-3</isbn>
+    <available>false</available>
+  </book>
+</catalog>`,
+                
+                employees: `<?xml version="1.0"?>
+<employees>
+  <employee id="E001" active="true">
+    <name>
+      <first>John</first>
+      <last>Doe</last>
+    </name>
+    <department>Engineering</department>
+    <position>Senior Developer</position>
+    <salary>75000</salary>
+    <hire_date>2020-01-15</hire_date>
+    <skills>
+      <skill level="expert">JavaScript</skill>
+      <skill level="expert">React</skill>
+      <skill level="intermediate">Python</skill>
+      <skill level="beginner">Go</skill>
+    </skills>
+    <contact>
+      <email>john.doe@company.com</email>
+      <phone>+1-555-0123</phone>
+    </contact>
+  </employee>
+  <employee id="E002" active="true">
+    <name>
+      <first>Jane</first>
+      <last>Smith</last>
+    </name>
+    <department>Marketing</department>
+    <position>Marketing Manager</position>
+    <salary>65000</salary>
+    <hire_date>2019-03-20</hire_date>
+    <skills>
+      <skill level="expert">Digital Marketing</skill>
+      <skill level="intermediate">Analytics</skill>
+    </skills>
+    <contact>
+      <email>jane.smith@company.com</email>
+      <phone>+1-555-0124</phone>
+    </contact>
+  </employee>
+</employees>`,
+                
+                products: `<inventory>
+  <product sku="P001" available="true">
+    <name>Laptop Computer</name>
+    <category>Electronics</category>
+    <price>999.99</price>
+    <stock>50</stock>
+    <description><![CDATA[High-performance laptop with 16GB RAM and 512GB SSD. Perfect for developers and content creators.]]></description>
+    <specifications>
+      <cpu>Intel Core i7</cpu>
+      <ram>16GB DDR4</ram>
+      <storage>512GB SSD</storage>
+      <display>15.6" 4K</display>
+    </specifications>
+    <tags>
+      <tag>laptop</tag>
+      <tag>computer</tag>
+      <tag>electronics</tag>
+      <tag>portable</tag>
+    </tags>
+    <reviews>
+      <review rating="5">Excellent performance!</review>
+      <review rating="4">Great value for money</review>
+    </reviews>
+  </product>
+  <product sku="P002" available="false">
+    <name>Wireless Mouse</name>
+    <category>Accessories</category>
+    <price>29.99</price>
+    <stock>0</stock>
+    <description>Ergonomic wireless mouse with precision tracking</description>
+    <specifications>
+      <connectivity>Bluetooth 5.0</connectivity>
+      <battery>AAA x2</battery>
+      <range>10 meters</range>
+    </specifications>
+    <tags>
+      <tag>mouse</tag>
+      <tag>wireless</tag>
+      <tag>accessory</tag>
+    </tags>
+  </product>
+</inventory>`,
+                
+                config: `<?xml version="1.0"?>
+<configuration>
+  <database>
+    <host>localhost</host>
+    <port>5432</port>
+    <name>myapp_db</name>
+    <credentials>
+      <username>admin</username>
+      <password encrypted="true">***</password>
+    </credentials>
+    <pool>
+      <min_connections>5</min_connections>
+      <max_connections>20</max_connections>
+      <timeout>30</timeout>
+    </pool>
+  </database>
+  <features>
+    <feature name="logging" enabled="true" level="info" />
+    <feature name="caching" enabled="false" ttl="3600" />
+    <feature name="analytics" enabled="true" provider="google" />
+    <feature name="notifications" enabled="true" />
+  </features>
+  <!-- Application settings -->
+  <settings>
+    <debug>false</debug>
+    <timeout>30</timeout>
+    <max_file_size>10485760</max_file_size>
+    <allowed_origins>
+      <origin>https://example.com</origin>
+      <origin>https://app.example.com</origin>
+    </allowed_origins>
+  </settings>
+  <security>
+    <jwt_secret>your-secret-key</jwt_secret>
+    <session_timeout>1800</session_timeout>
+    <rate_limit requests="100" window="3600" />
+  </security>
+</configuration>`,
+                
+                rss: `<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>Tech News Daily</title>
+    <description>Latest technology news and updates from around the world</description>
+    <link>https://technews.example.com</link>
+    <language>en-us</language>
+    <pubDate>Mon, 15 Jan 2024 10:00:00 GMT</pubDate>
+    <lastBuildDate>Mon, 15 Jan 2024 10:00:00 GMT</lastBuildDate>
+    <item>
+      <title>New JavaScript Framework Released</title>
+      <description><![CDATA[A revolutionary new framework that simplifies web development and improves performance by 40%.]]></description>
+      <pubDate>Mon, 15 Jan 2024 10:00:00 GMT</pubDate>
+      <link>https://technews.example.com/news/javascript-framework</link>
+      <guid>https://technews.example.com/news/javascript-framework</guid>
+      <category>Web Development</category>
+      <author>tech@example.com (Tech Reporter)</author>
+    </item>
+    <item>
+      <title>AI Breakthrough in Machine Learning</title>
+      <description>Scientists achieve new milestone in artificial intelligence with 95% accuracy in image recognition tasks.</description>
+      <pubDate>Sun, 14 Jan 2024 15:30:00 GMT</pubDate>
+      <link>https://technews.example.com/news/ai-breakthrough</link>
+      <guid>https://technews.example.com/news/ai-breakthrough</guid>
+      <category>Artificial Intelligence</category>
+      <author>ai@example.com (AI Correspondent)</author>
+    </item>
+    <item>
+      <title>Quantum Computing Advances</title>
+      <description>New quantum processor achieves unprecedented computational speeds in cryptography applications.</description>
+      <pubDate>Sat, 13 Jan 2024 09:15:00 GMT</pubDate>
+      <link>https://technews.example.com/news/quantum-computing</link>
+      <guid>https://technews.example.com/news/quantum-computing</guid>
+      <category>Quantum Computing</category>
+    </item>
+  </channel>
+</rss>`,
+                
+                complex: `<company>
+  <info name="TechCorp" founded="2010" employees="500">
+    <address>
+      <street>123 Tech Street</street>
+      <city>San Francisco</city>
+      <state>CA</state>
+      <zip>94105</zip>
+      <country>USA</country>
+    </address>
+    <contact>
+      <phone type="main">+1-555-0123</phone>
+      <phone type="support">+1-555-0124</phone>
+      <phone type="sales">+1-555-0125</phone>
+      <email>info@techcorp.com</email>
+      <website>https://techcorp.com</website>
+    </contact>
+    <social>
+      <platform name="twitter">@techcorp</platform>
+      <platform name="linkedin">techcorp-inc</platform>
+      <platform name="github">techcorp</platform>
+    </social>
+  </info>
+  <departments>
+    <department id="eng" budget="1000000">
+      <name>Engineering</name>
+      <head>John Smith</head>
+      <location>Building A, Floor 3</location>
+      <teams>
+        <team name="Frontend" size="5" lead="Alice Johnson" />
+        <team name="Backend" size="8" lead="Bob Wilson" />
+        <team name="DevOps" size="3" lead="Carol Davis" />
+        <team name="Mobile" size="4" lead="David Brown" />
+      </teams>
+      <projects>
+        <project name="WebApp v2" status="active" priority="high" />
+        <project name="Mobile App" status="planning" priority="medium" />
+        <project name="API Gateway" status="completed" priority="low" />
+      </projects>
+    </department>
+    <department id="marketing" budget="500000">
+      <name>Marketing</name>
+      <head>Emma Martinez</head>
+      <location>Building B, Floor 2</location>
+      <campaigns>
+        <campaign name="Q1 Launch" budget="50000" status="active" />
+        <campaign name="Brand Awareness" budget="30000" status="planning" />
+      </campaigns>
+    </department>
+  </departments>
+  <financials>
+    <revenue year="2023">5000000</revenue>
+    <expenses year="2023">3500000</expenses>
+    <profit year="2023">1500000</profit>
+    <growth_rate>15.5</growth_rate>
+  </financials>
+</company>`
+            };
+            
+            const textInput = document.getElementById('xmlTextInput');
+            if (textInput && samples[type]) {
+                textInput.value = samples[type];
+                
+                // Trigger input event to enable buttons
+                textInput.dispatchEvent(new Event('input'));
+                
+                // Scroll to the converter
+                document.getElementById('xmlConverterContainer').scrollIntoView({ 
+                    behavior: 'smooth' 
+                });
+                
+                // Show success message
+                if (xmlConverter) {
+                    xmlConverter.showMessage(`Sample ${type} data loaded successfully!`, 'success');
+                }
+            }
+        }
+    </script>
+</body>
+</html>

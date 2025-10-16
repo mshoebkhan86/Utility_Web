@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SQL Formatter - Utility Tools</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .header h1 {
+            color: white;
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .header p {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.1rem;
+        }
+
+        .back-link {
+            position: absolute;
+            top: 2rem;
+            left: 2rem;
+            color: white;
+            text-decoration: none;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .back-link:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .sql-formatter-container {
+            margin-bottom: 2rem;
+        }
+
+        .info-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .info-card {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .info-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .info-card h3 {
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .info-card p {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .features-section {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .features-section h2 {
+            color: #2c3e50;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .feature-item {
+            padding: 1rem;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            background: #f8f9fa;
+        }
+
+        .feature-item h4 {
+            color: #495057;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .feature-item p {
+            color: #666;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .shortcuts-section {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .shortcuts-section h2 {
+            color: #2c3e50;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .shortcuts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+
+        .shortcut-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem;
+            background: #f8f9fa;
+            border-radius: 6px;
+            border: 1px solid #e9ecef;
+        }
+
+        .shortcut-key {
+            background: #495057;
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 0.8rem;
+        }
+
+        .samples-section {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .samples-section h2 {
+            color: #2c3e50;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .samples-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+
+        .sample-item {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .sample-item:hover {
+            border-color: #667eea;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+        }
+
+        .sample-header {
+            padding: 1rem;
+            background: #e9ecef;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .sample-header h4 {
+            color: #495057;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .sample-code {
+            padding: 1rem;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 0.85rem;
+            line-height: 1.4;
+            color: #495057;
+            background: white;
+            overflow-x: auto;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .back-link {
+                position: static;
+                margin-bottom: 1rem;
+                align-self: flex-start;
+            }
+
+            .info-cards {
+                grid-template-columns: 1fr;
+            }
+
+            .features-grid,
+            .shortcuts-grid,
+            .samples-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="back-link">
+        <i class="fas fa-arrow-left"></i>
+        Back to Dashboard
+    </a>
+
+    <div class="header">
+        <h1><i class="fas fa-database"></i> SQL Formatter</h1>
+        <p>Format, validate, and beautify your SQL queries with advanced features</p>
+    </div>
+
+    <!-- SQL Formatter Container -->
+    <div id="sqlFormatterContainer" class="sql-formatter-container"></div>
+
+    <!-- Info Cards -->
+    <div class="info-cards">
+        <div class="info-card">
+            <h3><i class="fas fa-magic"></i> Smart Formatting</h3>
+            <p>Automatically format SQL queries with proper indentation, keyword casing, and line breaks. Supports multiple SQL dialects and formatting styles.</p>
+        </div>
+        <div class="info-card">
+            <h3><i class="fas fa-check-circle"></i> SQL Validation</h3>
+            <p>Validate SQL syntax, check for common errors, and get detailed feedback on query structure and potential issues.</p>
+        </div>
+        <div class="info-card">
+            <h3><i class="fas fa-compress-alt"></i> Minification</h3>
+            <p>Compress SQL queries by removing unnecessary whitespace and formatting while preserving functionality.</p>
+        </div>
+        <div class="info-card">
+            <h3><i class="fas fa-palette"></i> Syntax Highlighting</h3>
+            <p>Beautiful syntax highlighting for keywords, functions, data types, strings, and comments to improve readability.</p>
+        </div>
+    </div>
+
+    <!-- Features Section -->
+    <div class="features-section">
+        <h2><i class="fas fa-star"></i> Key Features</h2>
+        <div class="features-grid">
+            <div class="feature-item">
+                <h4><i class="fas fa-cogs"></i> Customizable Settings</h4>
+                <p>Configure indentation size, keyword casing, comma positioning, and line length to match your coding standards.</p>
+            </div>
+            <div class="feature-item">
+                <h4><i class="fas fa-file-import"></i> File Support</h4>
+                <p>Load SQL files directly from your computer and export formatted results as .sql files.</p>
+            </div>
+            <div class="feature-item">
+                <h4><i class="fas fa-history"></i> Format History</h4>
+                <p>Keep track of your formatting operations with a comprehensive history that you can revisit anytime.</p>
+            </div>
+            <div class="feature-item">
+                <h4><i class="fas fa-copy"></i> Quick Actions</h4>
+                <p>Copy formatted output to clipboard, clear content, and download results with convenient one-click actions.</p>
+            </div>
+            <div class="feature-item">
+                <h4><i class="fas fa-search"></i> Query Analysis</h4>
+                <p>Get detailed statistics about your SQL queries including line count, character count, and complexity metrics.</p>
+            </div>
+            <div class="feature-item">
+                <h4><i class="fas fa-mobile-alt"></i> Responsive Design</h4>
+                <p>Works perfectly on desktop, tablet, and mobile devices with an adaptive interface that scales beautifully.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Keyboard Shortcuts -->
+    <div class="shortcuts-section">
+        <h2><i class="fas fa-keyboard"></i> Keyboard Shortcuts</h2>
+        <div class="shortcuts-grid">
+            <div class="shortcut-item">
+                <span>Format SQL</span>
+                <span class="shortcut-key">Ctrl + F</span>
+            </div>
+            <div class="shortcut-item">
+                <span>Minify SQL</span>
+                <span class="shortcut-key">Ctrl + M</span>
+            </div>
+            <div class="shortcut-item">
+                <span>Validate SQL</span>
+                <span class="shortcut-key">Ctrl + V</span>
+            </div>
+            <div class="shortcut-item">
+                <span>Clear All</span>
+                <span class="shortcut-key">Ctrl + Del</span>
+            </div>
+            <div class="shortcut-item">
+                <span>Copy Output</span>
+                <span class="shortcut-key">Ctrl + C</span>
+            </div>
+            <div class="shortcut-item">
+                <span>Download SQL</span>
+                <span class="shortcut-key">Ctrl + S</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sample Data -->
+    <div class="samples-section">
+        <h2><i class="fas fa-code"></i> Sample SQL Queries</h2>
+        <div class="samples-grid">
+            <div class="sample-item" onclick="loadSample('basic')">
+                <div class="sample-header">
+                    <h4><i class="fas fa-play"></i> Basic SELECT</h4>
+                </div>
+                <div class="sample-code">select * from users where age > 18 and status = 'active' order by created_at desc;</div>
+            </div>
+            <div class="sample-item" onclick="loadSample('join')">
+                <div class="sample-header">
+                    <h4><i class="fas fa-link"></i> Complex JOIN</h4>
+                </div>
+                <div class="sample-code">select u.name, p.title, c.name as category from users u inner join posts p on u.id = p.user_id left join categories c on p.category_id = c.id where u.active = 1;</div>
+            </div>
+            <div class="sample-item" onclick="loadSample('subquery')">
+                <div class="sample-header">
+                    <h4><i class="fas fa-layer-group"></i> Subquery</h4>
+                </div>
+                <div class="sample-code">select * from products where price > (select avg(price) from products where category_id = 1) and stock_quantity > 0;</div>
+            </div>
+            <div class="sample-item" onclick="loadSample('insert')">
+                <div class="sample-header">
+                    <h4><i class="fas fa-plus"></i> INSERT Statement</h4>
+                </div>
+                <div class="sample-code">insert into users (name, email, age, created_at) values ('John Doe', 'john@example.com', 25, now()), ('Jane Smith', 'jane@example.com', 30, now());</div>
+            </div>
+            <div class="sample-item" onclick="loadSample('update')">
+                <div class="sample-header">
+                    <h4><i class="fas fa-edit"></i> UPDATE Statement</h4>
+                </div>
+                <div class="sample-code">update users set last_login = now(), login_count = login_count + 1 where email = 'user@example.com' and active = 1;</div>
+            </div>
+            <div class="sample-item" onclick="loadSample('create')">
+                <div class="sample-header">
+                    <h4><i class="fas fa-table"></i> CREATE TABLE</h4>
+                </div>
+                <div class="sample-code">create table orders (id int primary key auto_increment, user_id int not null, total decimal(10,2), status varchar(20) default 'pending', created_at timestamp default current_timestamp);</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/utilities/sql-formatter.js"></script>
+    <script>
+        // Initialize SQL Formatter
+        document.addEventListener('DOMContentLoaded', function() {
+            const container = document.getElementById('sqlFormatterContainer');
+            if (container && window.sqlFormatter) {
+                window.sqlFormatter.init(container);
+                window.sqlFormatter.loadHistory();
+            }
+        });
+
+        // Sample data loading function
+        function loadSample(type) {
+            const samples = {
+                basic: `select * from users where age > 18 and status = 'active' order by created_at desc;`,
+                
+                join: `select u.name, p.title, c.name as category from users u inner join posts p on u.id = p.user_id left join categories c on p.category_id = c.id where u.active = 1;`,
+                
+                subquery: `select * from products where price > (select avg(price) from products where category_id = 1) and stock_quantity > 0;`,
+                
+                insert: `insert into users (name, email, age, created_at) values ('John Doe', 'john@example.com', 25, now()), ('Jane Smith', 'jane@example.com', 30, now());`,
+                
+                update: `update users set last_login = now(), login_count = login_count + 1 where email = 'user@example.com' and active = 1;`,
+                
+                create: `create table orders (id int primary key auto_increment, user_id int not null, total decimal(10,2), status varchar(20) default 'pending', created_at timestamp default current_timestamp);`
+            };
+
+            if (samples[type] && window.sqlFormatter && window.sqlFormatter.inputArea) {
+                window.sqlFormatter.inputArea.value = samples[type];
+                window.sqlFormatter.updateInputInfo();
+                window.sqlFormatter.showMessage(`Sample ${type} query loaded`, 'success');
+                
+                // Scroll to the formatter
+                document.getElementById('sqlFormatterContainer').scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'start' 
+                });
+            }
+        }
+    </script>
+</body>
+</html>
